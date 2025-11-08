@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import "./../styles/AdminPage.scss";
+import "../styles/pages/AdminPage.scss";
 
 function AdminPage() {
   const [bookings, setBookings] = useState([]);

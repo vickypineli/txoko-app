@@ -1,0 +1,27 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.splash-screen {
+  @include flex-center;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--color-primary);
+  color: white;
+  text-align: center;
+  animation: fadeIn 1s ease-in;
+
+  .logo {
+    font-size: 3rem;
+    letter-spacing: 2px;
+  }
+
+  p {
+    font-size: 1.2rem;
+    opacity: 0.8;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
