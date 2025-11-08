@@ -1,0 +1,24 @@
+// src/styles/_mixins.scss
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin card {
+  background: var(--color-card-bg);
+  border-radius: $radius;
+  box-shadow: $shadow;
+  padding: 1rem;
+}
+
+@mixin theme-colors($theme) {
+  --color-primary: map-get($theme, primary);
+  --color-secondary: map-get($theme, secondary);
+  --color-background: map-get($theme, background);
+  --color-text: map-get($theme, text);
+  --color-card-bg: map-get($theme, card-bg);
+}
+
+

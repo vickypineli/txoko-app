@@ -1,0 +1,24 @@
+.btn {
+  background-color: var(--color-primary);
+  color: var(--color-card-bg);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  // border-radius: $radius;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: var(--color-secondary);
+  }
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+
+  &:hover {
+    background-color: var(--color-primary);
+    color: var(--color-card-bg);
+  }
+}

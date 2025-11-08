@@ -1,0 +1,42 @@
+// src/styles/main.scss
+@use "./abstracts/variables" as *;
+@use "./abstracts/mixins" as *;
+@use "./base/reset";
+@use "./base/global";
+@use "./base/typography";
+@use "./components/buttons";
+@use "./components/cards";
+@use "./components/forms";
+
+// Aplicar el tema claro por defecto
+:root {
+  @include theme-colors($theme-light);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: $font-main;
+  margin: 0;
+  padding: 0;
+}
+
+// // Tema claro por defecto
+// :root {
+//    @include mixins.theme-colors(vars.$theme-light);
+// }
+
+// body {
+//   margin: 0;
+//   padding: 0;
+//   font-family: $font-main;
+//   background-color: var(--color-background);
+//   color: var(--color-text);
+// }
+
+// Ejemplo de tarjeta
+// .card {
+//   background-color: var(--color-card-bg);
+//   box-shadow: $shadow;
+//   padding: 1rem;
+// }
