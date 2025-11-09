@@ -1,0 +1,74 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;    
+@use "../abstracts/functions" as *;
+
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to bottom right, $primary-color, $secondary-color);
+
+  .auth-box {
+    background: white;
+    padding: 2rem;
+    border-radius: $border-radius;
+    box-shadow: $shadow-md;
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+
+    h2 {
+      color: $primary-color;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: $text-color;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      input {
+        padding: 0.75rem;
+        border-radius: $border-radius;
+        border: 1px solid #ccc;
+      }
+
+      button {
+        background-color: $primary-color;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: $border-radius;
+        cursor: pointer;
+        font-weight: bold;
+        @include transition(0.2s);
+
+        &:hover {
+          background-color: darken($primary-color, 10%);
+        }
+      }
+    }
+
+    .register-text {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+
+      span {
+        color: $secondary-color;
+        cursor: pointer;
+        font-weight: bold;
+        margin-left: 5px;
+        @include transition(0.2s);
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+

@@ -1,5 +1,7 @@
 // src/styles/_mixins.scss
 
+
+
 @mixin flex-center {
   display: flex;
   justify-content: center;
@@ -20,5 +22,38 @@
   --color-text: map-get($theme, text);
   --color-card-bg: map-get($theme, card-bg);
 }
+// 🔹 Mixin base para botones reutilizable en toda la app
+@mixin button-base($bg-color: #007bff, $text-color: #fff) {
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: $bg-color;
+  color: $text-color;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
 
 
+// Transición suave
+@mixin transition($time: 0.3s) {
+  transition: all $time ease-in-out;
+}
+
+@mixin theme-colors($bg, $text: #fff) {
+  background:black;
+  color: $text;
+}

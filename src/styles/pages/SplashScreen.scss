@@ -1,27 +1,95 @@
+// src/styles/pages/SplashScreen.scss
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
 .splash-screen {
-  @include flex-center;
-  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
-  background-color: var(--color-primary);
-  color: white;
-  text-align: center;
-  animation: fadeIn 1s ease-in;
+  width: 100%;
+  /* fondo coherente con el tema primario */
+  background-color: green;
+  // background: linear-gradient(135deg, var(--color-primary, #0077ff), var(--color-secondary, #5ab2ff));
+  // color: #fff;
+  color:black;
+  font-family: $font-main;
+  animation: fadeIn 0.5s ease-in;
 
-  .logo {
-    font-size: 3rem;
-    letter-spacing: 2px;
-  }
+  .logo-box {
+    text-align: center;
+    padding: 1.6rem;
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+    background: rgba(255,255,255,0.06);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+    transform-origin: center;
+    animation: popIn 0.9s ease-out;
 
-  p {
-    font-size: 1.2rem;
-    opacity: 0.8;
+    .logo-svg {
+      margin: 0 auto 0.8rem auto;
+      display: inline-block;
+      color: rgba(255,255,255,0.95); /* controla el stroke del SVG */
+      width: 80px;
+      height: 80px;
+
+      svg {
+        width: 80px;
+        height: 80px;
+        display: block;
+      }
+    }
+
+    .logo-text {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin: 0;
+      color: #fff;
+    }
+
+    .subtitle {
+      margin-top: 0.45rem;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+
+    .loader {
+      width: 42px;
+      height: 42px;
+      margin: 0.6rem auto 0;
+      border-radius: 50%;
+      border: 4px solid rgba(255,255,255,0.18);
+      border-top-color: rgba(255,255,255,0.95);
+      animation: spin 1s linear infinite;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
   }
 }
 
+/* Animaciones */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+@keyframes popIn {
+  0% { transform: scale(0.96); opacity: 0; }
+  60% { transform: scale(1.02); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Responsive — ajusta tamaño en móviles */
+@media (max-width: 420px) {
+  .splash-screen .logo-box {
+    padding: 1rem;
+  }
+  .splash-screen .logo-text {
+    font-size: 1.5rem;
+  }
+  .splash-screen .logo-svg { width: 64px; height: 64px; }
+  .splash-screen .loader { width: 36px; height: 36px; border-width: 3px; }
 }

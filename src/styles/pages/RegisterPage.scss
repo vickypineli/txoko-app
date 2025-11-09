@@ -1,0 +1,64 @@
+// src/styles/pages/RegisterPage.scss
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: $background-light;
+
+  .register-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+
+    h2 {
+      margin-bottom: 1.5rem;
+      color: $primary-color;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      background: $primary-color;
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &:hover {
+        background: darken($primary-color, 10%);
+      }
+    }
+
+    p {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+
+      span {
+        color: $primary-color;
+        font-weight: bold;
+        cursor: pointer;
+      }
+    }
+  }
+}

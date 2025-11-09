@@ -1,0 +1,98 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.calendar {
+  margin: 1rem auto;
+  max-width: 360px;
+  background: var(--color-card-bg);
+  border-radius: $radius;
+  box-shadow: $shadow;
+  padding: 1rem;
+  text-align: center;
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    button {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.3rem 0.7rem;
+      cursor: pointer;
+      @include transition();
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    h3 {
+      text-transform: capitalize;
+      font-size: 1.1rem;
+    }
+  }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+
+    .day {
+      @include flex-center;
+      aspect-ratio: 1;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.9rem;
+      @include transition(0.2s);
+
+      &.available {
+        background: #2ecc71; // verde
+        color: white;
+      }
+
+      &.morning {
+        background: #e67e22; // naranja
+        color: white;
+      }
+
+      &.afternoon {
+        background: #3498db; // azul
+        color: white;
+      }
+
+      &.full {
+        background: #e74c3c; // rojo
+        color: white;
+      }
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .legend {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-around;
+    text-align: left;
+
+    .color {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 5px;
+      border-radius: 3px;
+
+      &.full { background: #e74c3c; }
+      &.morning { background: #e67e22; }
+      &.afternoon { background: #3498db; }
+      &.available { background: #2ecc71; }
+    }
+  }
+}

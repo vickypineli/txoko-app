@@ -1,3 +1,4 @@
+// src/components/ReservationModal.jsx
 import React from "react";
 
 function ReservationModal () {

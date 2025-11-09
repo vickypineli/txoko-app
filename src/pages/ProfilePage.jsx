@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../firebaseConfig";
 import { doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
@@ -17,72 +18,111 @@ function ProfilePage() {
   });
   const [bookings, setBookings] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Obtener usuario autenticado
+  const navigate = useNavigate();
+
+  // 🔹 Cargar datos del usuario y reservas
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        await loadUserProfile(currentUser.uid);
-        await loadUserBookings(currentUser.uid);
+        await Promise.all([
+          loadUserProfile(currentUser.uid),
+          loadUserBookings(currentUser.uid),
+        ]);
       }
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
   const loadUserProfile = async (uid) => {
-    const userRef = doc(db, "users", uid);
-    const snap = await getDoc(userRef);
-    if (snap.exists()) {
-      setProfile(snap.data());
+    try {
+      const snap = await getDoc(doc(db, "users", uid));
+      if (snap.exists()) setProfile(snap.data());
+    } catch (error) {
+      console.error("Error al obtener perfil:", error);
     }
   };
 
   const loadUserBookings = async (uid) => {
-    const q = query(collection(db, "bookings"), where("userId", "==", uid));
-    const querySnapshot = await getDocs(q);
-    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setBookings(data);
+    try {
+      const q = query(collection(db, "bookings"), where("userId", "==", uid));
+      const querySnapshot = await getDocs(q);
+      const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setBookings(data);
+    } catch (error) {
+      console.error("Error al obtener reservas:", error);
+    }
   };
 
   const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = async () => {
-    if (!user) return;
-    const userRef = doc(db, "users", user.uid);
-    await updateDoc(userRef, profile);
-    setEditing(false);
-    alert("✅ Perfil actualizado correctamente");
+    if (!user) return alert("Debes iniciar sesión");
+    try {
+      await updateDoc(doc(db, "users", user.uid), profile);
+      setEditing(false);
+      alert("✅ Perfil actualizado correctamente");
+    } catch (error) {
+      console.error("Error al actualizar perfil:", error);
+      alert("Error al actualizar el perfil");
+    }
   };
+
+  // 🔸 Generar iniciales
+  const getInitials = () => {
+    const nombre = profile.nombre?.trim().split(" ")[0] || "";
+    const apellidos = profile.apellidos?.trim().split(" ")[0] || "";
+    return (nombre.charAt(0) + (apellidos.charAt(0) || "")).toUpperCase();
+  };
+
+  // 🔸 Generar color único desde UID o nombre
+  const getAvatarColor = () => {
+    const str = user?.uid || profile.nombre || "default";
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash) % 360;
+    return `hsl(${hue}, 70%, 50%)`;
+  };
+
+  if (loading) {
+    return <p className="loading">Cargando datos del perfil...</p>;
+  }
 
   return (
     <div className="profile-page">
       <h2>Mi Perfil</h2>
 
       <div className="profile-card">
+        <div className="avatar" style={{ backgroundColor: getAvatarColor() }}>
+          {getInitials()}
+        </div>
+
         {editing ? (
           <div className="profile-form">
-            <label>Nombre:</label>
-            <input type="text" name="nombre" value={profile.nombre} onChange={handleChange} />
+            {["nombre", "apellidos", "direccion", "portal", "piso", "telefono"].map((field) => (
+              <div key={field}>
+                <label>{field.charAt(0).toUpperCase() + field.slice(1)}:</label>
+                <input
+                  type="text"
+                  name={field}
+                  value={profile[field] || ""}
+                  onChange={handleChange}
+                />
+              </div>
+            ))}
 
-            <label>Apellidos:</label>
-            <input type="text" name="apellidos" value={profile.apellidos} onChange={handleChange} />
-
-            <label>Dirección:</label>
-            <input type="text" name="direccion" value={profile.direccion} onChange={handleChange} />
-
-            <label>Portal:</label>
-            <input type="text" name="portal" value={profile.portal} onChange={handleChange} />
-
-            <label>Piso:</label>
-            <input type="text" name="piso" value={profile.piso} onChange={handleChange} />
-
-            <label>Teléfono:</label>
-            <input type="text" name="telefono" value={profile.telefono} onChange={handleChange} />
-
-            <button onClick={handleSave}>Guardar</button>
+            <div className="buttons">
+              <button className="btn-save" onClick={handleSave}>Guardar</button>
+              <button className="btn-cancel" onClick={() => setEditing(false)}>Cancelar</button>
+            </div>
           </div>
         ) : (
           <div className="profile-info">
@@ -92,9 +132,9 @@ function ProfilePage() {
             <p><strong>Portal:</strong> {profile.portal}</p>
             <p><strong>Piso:</strong> {profile.piso}</p>
             <p><strong>Teléfono:</strong> {profile.telefono}</p>
-            <p><strong>Email:</strong> {user?.email}</p>
+            <p><strong>Email:</strong> {profile.email}</p>
 
-            <button onClick={() => setEditing(true)}>Editar</button>
+            <button className="btn-edit" onClick={() => setEditing(true)}>Editar perfil</button>
           </div>
         )}
       </div>
@@ -106,13 +146,17 @@ function ProfilePage() {
         <ul className="booking-list">
           {bookings.map((b) => (
             <li key={b.id}>
-              <strong>{b.date}</strong> — {b.type} — {b.price}€
+              <strong>{b.date}</strong> — {b.type === "full" ? "Día completo" : b.type === "morning" ? "Mañana" : "Tarde"}
             </li>
           ))}
         </ul>
       )}
+
+      <button className="btn-home" onClick={() => navigate("/home")}>🏠 Volver al inicio</button>
     </div>
   );
 }
 
 export default ProfilePage;
+
+

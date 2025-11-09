@@ -1,0 +1,113 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+@use "../abstracts/functions" as *;
+
+.profile-page {
+  padding: 2rem;
+  text-align: center;
+  background-color: $background-light;
+  color: $color-text;
+
+  h2 {
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-card {
+    background: $background-light;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
+    padding: 2rem;
+    margin: 0 auto 2rem;
+    max-width: 400px;
+    position: relative;
+
+    .avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      color: $background-light;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      box-shadow: $shadow-lg;
+    }
+
+    .profile-info, .profile-form {
+      text-align: left;
+
+      p {
+        margin: 0.5rem 0;
+        color: $color-text-secondary;
+      }
+
+      label {
+        display: block;
+        margin-top: 0.8rem;
+        font-weight: 500;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid $color-text-secondary;
+        border-radius: $radius-sm;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+    }
+
+    button {
+    @include button-base();
+      margin-top: 1rem;
+
+      &.btn-edit {
+        background: $primary-color;
+        color: $background-light;
+      }
+
+      &.btn-save {
+        background: $color-success;
+        color: $background-light;
+      }
+
+      &.btn-cancel {
+        background: $danger-color;
+        color: $background-light;
+      }
+    }
+  }
+
+  .booking-list {
+    list-style: none;
+    padding: 0;
+
+    li {
+      background: $background-light;
+      margin: 0.5rem auto;
+      padding: 0.8rem;
+      border-radius: $radius-sm;
+      max-width: 400px;
+    }
+  }
+
+  .btn-home {
+    @include button-base ($color-secondary);
+    background: $secondary-color;
+    color: $background-light;
+    margin-top: 2rem;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    color: $color-text-secondary
+  }
+}

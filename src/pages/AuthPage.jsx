@@ -1,44 +1,41 @@
+// src/pages/AuthPage.jsx
 import { useState } from "react";
-import { auth, googleProvider } from "../firebaseConfig";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth} from "../firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "../styles/pages/AuthPage.scss";
 
 function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isRegister, setIsRegister] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      if (isRegister) {
-        await createUserWithEmailAndPassword(auth, email, password);
-      } else {
-        await signInWithEmailAndPassword(auth, email, password);
-      }
+      await signInWithEmailAndPassword(auth, email, password);
       navigate("/home");
+    // eslint-disable-next-line no-unused-vars
     } catch (err) {
-      alert(err.message);
+      alert("Error al iniciar sesión. Verifica tus datos o regístrate primero.");
     }
   };
 
-  const handleGoogle = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      navigate("/home");
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     await signInWithPopup(auth, googleProvider);
+  //     navigate("/home");
+  //   } catch (err) {
+  //     alert("Error con Google Sign-In: " + err.message);
+  //   }
+  // };
 
   return (
     <div className="auth-page">
       <div className="auth-box">
-        <h2>{isRegister ? "Registro" : "Iniciar Sesión"}</h2>
+        <h2>Iniciar Sesión</h2>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleLogin}>
           <input
             type="email"
             placeholder="Correo electrónico"
@@ -55,20 +52,16 @@ function AuthPage() {
             required
           />
 
-          <button type="submit">
-            {isRegister ? "Registrarme" : "Entrar"}
-          </button>
+          <button type="submit">Entrar</button>
         </form>
 
-        <button className="google-btn" onClick={handleGoogle}>
+        {/* <button className="google-btn" onClick={handleGoogleLogin}>
           Iniciar sesión con Google
-        </button>
+        </button> */}
 
-        <p>
-          {isRegister ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?"}
-          <span onClick={() => setIsRegister(!isRegister)}>
-            {isRegister ? " Inicia sesión" : " Regístrate"}
-          </span>
+        <p className="register-text">
+          ¿No tienes cuenta?
+          <span onClick={() => navigate("/register")}> Regístrate aquí</span>
         </p>
       </div>
     </div>
@@ -76,3 +69,4 @@ function AuthPage() {
 }
 
 export default AuthPage;
+
