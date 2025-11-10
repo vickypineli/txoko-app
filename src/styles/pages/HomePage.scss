@@ -40,14 +40,14 @@
           @include transition(0.2s);
 
           &:hover {
-            background-color: darken($primary-color, 10%);
+            background-color: rgba($primary-color, 10%);
           }
 
           &.logout {
             background-color: $danger-color;
 
             &:hover {
-              background-color: darken($danger-color, 10%);
+              background-color: rgba($danger-color, 10%);
             }
           }
         }
@@ -88,14 +88,14 @@
       @include transition(0.3s);
 
       &:hover {
-        background-color: darken($primary-color, 8%);
+        background-color: rgba($primary-color, 8%);
       }
 
       &:nth-child(2) {
         background-color: $secondary-color;
 
         &:hover {
-          background-color: darken($secondary-color, 8%);
+          background-color: rgba($secondary-color, 8%);
         }
       }
     }

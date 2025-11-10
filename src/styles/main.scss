@@ -21,22 +21,3 @@ body {
   padding: 0;
 }
 
-// // Tema claro por defecto
-// :root {
-//    @include mixins.theme-colors(vars.$theme-light);
-// }
-
-// body {
-//   margin: 0;
-//   padding: 0;
-//   font-family: $font-main;
-//   background-color: var(--color-background);
-//   color: var(--color-text);
-// }
-
-// Ejemplo de tarjeta
-// .card {
-//   background-color: var(--color-card-bg);
-//   box-shadow: $shadow;
-//   padding: 1rem;
-// }

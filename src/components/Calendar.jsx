@@ -1,104 +1,168 @@
 // src/components/Calendar.jsx
+// src/components/Calendar.jsx
 import { useState, useEffect } from "react";
-import { listenBookingsByMonth } from "../services/bookingService";
 import "../styles/components/Calendar.scss";
+import { auth } from "../firebaseConfig";
 
-function Calendar() {
-  const [days, setDays] = useState([]);
+function Calendar({ bookings = [], onDayClick }) {
   const [month, setMonth] = useState(new Date());
-  const [bookings, setBookings] = useState([]);
+  const [days, setDays] = useState([]);
+  const user = auth.currentUser;
 
-  // Escucha las reservas en tiempo real del mes actual
   useEffect(() => {
+    if (bookings) generateCalendar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [month, bookings, user]);
+
+  const generateCalendar = () => {
     const year = month.getFullYear();
     const monthIndex = month.getMonth();
 
-    const unsubscribe = listenBookingsByMonth(year, monthIndex, (data) => {
-      setBookings(data);
-    });
+    const firstDay = new Date(year, monthIndex, 1);
+    const lastDay = new Date(year, monthIndex + 1, 0);
+    const totalDays = lastDay.getDate();
+    const todayStr = new Date().toISOString().split("T")[0];
 
-    return () => unsubscribe();
-  }, [month]);
+    // 🗓️ Lunes = 0, Domingo = 6
+    const firstWeekday = (firstDay.getDay() + 6) % 7;
 
-  // Genera los días del mes con estados según las reservas
-  useEffect(() => {
-    const year = month.getFullYear();
-    const monthIndex = month.getMonth();
-    const lastDay = new Date(year, monthIndex + 1, 0).getDate();
-
-    const newDays = [];
-
-    for (let i = 1; i <= lastDay; i++) {
-      const dateString = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
-      const booking = bookings.find((b) => b.date === dateString);
-
-      let status = "available";
-      if (booking) {
-        status =
-          booking.type === "full"
-            ? "full"
-            : booking.type === "morning"
-            ? "morning"
-            : "afternoon";
-      }
-
-      newDays.push({
-        day: i,
-        date: dateString,
-        status,
+    // Días del mes anterior (relleno visual)
+    const prevMonthLastDay = new Date(year, monthIndex, 0).getDate();
+    const prevMonthDays = [];
+    for (let i = firstWeekday - 1; i >= 0; i--) {
+      const dateStr = `${monthIndex === 0 ? year - 1 : year}-${String(
+        monthIndex === 0 ? 12 : monthIndex
+      ).padStart(2, "0")}-${String(prevMonthLastDay - i).padStart(2, "0")}`;
+      prevMonthDays.push({
+        day: prevMonthLastDay - i,
+        date: dateStr,
+        isOtherMonth: true,
       });
     }
 
-    setDays(newDays);
-  }, [bookings, month]);
+    // Días del mes actual
+    const currentMonthDays = [];
+    for (let i = 1; i <= totalDays; i++) {
+      const dateStr = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(i).padStart(
+        2,
+        "0"
+      )}`;
 
-  const prevMonth = () => {
-    setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1));
+      const dayBookings = bookings.filter((b) => b.date === dateStr);
+      let status = "available";
+
+      if (dayBookings.length > 0) {
+        const types = dayBookings.map((b) => b.type);
+        if (types.includes("full") || (types.includes("morning") && types.includes("afternoon"))) {
+          status = "full";
+        } else if (types.includes("morning")) {
+          status = "morning";
+        } else if (types.includes("afternoon")) {
+          status = "afternoon";
+        }
+      }
+
+      const bookedByUser = dayBookings.some((b) => b.userId === user?.uid);
+
+      currentMonthDays.push({
+        day: i,
+        date: dateStr,
+        status,
+        isToday: dateStr === todayStr,
+        bookedByUser,
+        isOtherMonth: false,
+      });
+    }
+
+    // Días del siguiente mes (relleno hasta 42 celdas)
+    const nextMonthDays = [];
+    const totalCells = [...prevMonthDays, ...currentMonthDays].length;
+    const remainingCells = 42 - totalCells;
+
+    for (let i = 1; i <= remainingCells; i++) {
+      const dateStr = `${monthIndex === 11 ? year + 1 : year}-${String(
+        monthIndex === 11 ? 1 : monthIndex + 2
+      ).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
+      nextMonthDays.push({
+        day: i,
+        date: dateStr,
+        isOtherMonth: true,
+      });
+    }
+
+    setDays([...prevMonthDays, ...currentMonthDays, ...nextMonthDays]);
   };
 
-  const nextMonth = () => {
-    setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1));
-  };
+  const prevMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1));
+  const nextMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1));
+
+  const currentYear = new Date().getFullYear();
 
   return (
     <div className="calendar">
+      {/* 🧭 Cabecera del mes */}
       <div className="calendar-header">
         <button onClick={prevMonth}>←</button>
-        <h3>
-          {month.toLocaleString("es-ES", { month: "long" })} {month.getFullYear()}
-        </h3>
+        <h3>{month.toLocaleString("es-ES", { month: "long", year: "numeric" })}</h3>
         <button onClick={nextMonth}>→</button>
       </div>
 
-      <div className="calendar-grid">
-        {days.map((d) => (
-          <div
-            key={d.date}
-            className={`day ${d.status}`}
-            title={
-              d.status === "available"
-                ? "Libre"
-                : d.status === "full"
-                ? "Día completo reservado"
-                : d.status === "morning"
-                ? "Reservado por la mañana"
-                : "Reservado por la tarde"
-            }
-          >
-            {d.day}
+      {/* 🗓️ Aviso de restricciones */}
+      <p className="calendar-info">
+        Solo se pueden reservar fechas dentro del año <strong>{currentYear}</strong> y posteriores a hoy.
+      </p>
+
+      {/* Días de la semana */}
+      <div className="calendar-weekdays">
+        {["L", "M", "X", "J", "V", "S", "D"].map((d) => (
+          <div key={d} className="weekday">
+            {d}
           </div>
         ))}
       </div>
 
+      {/* Grid del calendario */}
+      <div className="calendar-grid">
+        {days.map((d) => {
+          const today = new Date();
+          const dayDate = new Date(d.date);
+          const isPast = dayDate < new Date(today.toISOString().split("T")[0]);
+          const isDifferentYear = dayDate.getFullYear() !== today.getFullYear();
+          const isDisabled =
+            d.isOtherMonth || d.status === "full" || isPast || isDifferentYear;
+
+          return (
+            <div
+              key={d.date}
+              className={`day ${d.status || ""} ${d.isToday ? "today" : ""} ${
+                d.bookedByUser ? "user-booking" : ""
+              } ${d.isOtherMonth ? "other-month" : ""} ${
+                isDisabled ? "disabled" : ""
+              }`}
+              onClick={() => {
+                if (!isDisabled && onDayClick) onDayClick(d.date);
+              }}
+            >
+              {d.day}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Leyenda */}
       <div className="legend">
-        <div><span className="color full"></span> Día completo</div>
-        <div><span className="color morning"></span> Mañana</div>
-        <div><span className="color afternoon"></span> Tarde</div>
         <div><span className="color available"></span> Libre</div>
+        <div><span className="color morning"></span> Ocupado por la mañana</div>
+        <div><span className="color afternoon"></span> Ocupado por la tarde</div>
+        <div><span className="color full"></span> Ocupado todo el día</div>
+        <div><span className="color user-booking"></span> Tus reservas</div>
+        <div><span className="color today"></span> Hoy</div>
       </div>
     </div>
   );
 }
 
 export default Calendar;
+
+
 

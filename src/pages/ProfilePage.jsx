@@ -146,7 +146,8 @@ function ProfilePage() {
         <ul className="booking-list">
           {bookings.map((b) => (
             <li key={b.id}>
-              <strong>{b.date}</strong> — {b.type === "full" ? "Día completo" : b.type === "morning" ? "Mañana" : "Tarde"}
+              <strong>{b.date}</strong> — {b.type === 'full' ? 'Día completo' : b.type === 'morning' ? 'Mañana' : 'Tarde'}
+              {b.notes ? <div className="small-note">{b.notes}</div> : null}
             </li>
           ))}
         </ul>

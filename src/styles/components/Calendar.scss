@@ -1,98 +1,162 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// ===============================
+// 📅 ESTILOS CALENDARIO
+// ===============================
 .calendar {
-  margin: 1rem auto;
-  max-width: 360px;
-  background: var(--color-card-bg);
-  border-radius: $radius;
-  box-shadow: $shadow;
-  padding: 1rem;
   text-align: center;
 
+  // ----- Cabecera -----
   .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 10px;
 
     button {
-      background: var(--color-primary);
-      color: white;
+      background: none;
       border: none;
-      border-radius: 6px;
-      padding: 0.3rem 0.7rem;
+      font-size: 1.2rem;
       cursor: pointer;
-      @include transition();
+      transition: transform 0.2s;
       &:hover {
-        opacity: 0.8;
+        transform: scale(1.2);
       }
-    }
-
-    h3 {
-      text-transform: capitalize;
-      font-size: 1.1rem;
     }
   }
 
+  // ----- Días de la semana -----
+  .calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  // ----- Cuadrícula de días -----
   .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 4px;
+  }
 
-    .day {
-      @include flex-center;
-      aspect-ratio: 1;
-      border-radius: 6px;
+  // ----- Día individual -----
+  .day {
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+
+    // Estado general
+    &.available {
+      background: #e8fce8; // verde claro
+    }
+
+    // 🔵 Mañana ocupada
+    &.morning {
+      background: #a0c4ff; // azul claro
+    }
+
+    // 🟡 Tarde ocupada
+    &.afternoon {
+      background: #fff59d; // amarillo suave
+    }
+
+    // 🔴 Día completo ocupado
+    &.full {
+      background: #ffb3b3;
+    }
+
+    // ✳️ Reservas del usuario
+    &.user-booking {
+      border: 2px solid #1976d2;
+      box-shadow: 0 0 0 1px #1976d2 inset;
+    }
+
+    // 📍 Día actual
+    &.today {
+      box-shadow: 0 0 0 2px #000 inset;
       font-weight: bold;
-      cursor: pointer;
-      font-size: 0.9rem;
-      @include transition(0.2s);
+    }
+
+    // ⚫ Días de otros meses
+    &.other-month {
+      color: #aaa;
+      background: #f7f7f7;
+      cursor: default;
+    }
+
+    &:hover:not(.other-month):not(.full) {
+      transform: scale(1.05);
+    }
+  }
+    .calendar-info {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.8rem;
+    font-style: italic;
+  }
+
+  .day.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  // ===============================
+  // 🧭 LEYENDA DE COLORES
+  // ===============================
+  .legend {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+
+    .color {
+      width: 15px;
+      height: 15px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-right: 5px;
 
       &.available {
-        background: #2ecc71; // verde
-        color: white;
+        background-color: #b7e4c7; // verde
       }
-
       &.morning {
-        background: #e67e22; // naranja
-        color: white;
+        background-color: #a0c4ff; // azul
       }
-
       &.afternoon {
-        background: #3498db; // azul
-        color: white;
+        background-color: #fff59d; // amarillo
       }
-
       &.full {
-        background: #e74c3c; // rojo
-        color: white;
+        background-color: #ff6b6b; // rojo
       }
-
-      &:hover {
-        transform: scale(1.1);
+      &.user-booking {
+        border: 2px solid #0044cc;
+      }
+      &.today {
+        border: 2px solid #222;
       }
     }
   }
-
-  .legend {
-    margin-top: 1rem;
-    font-size: 0.8rem;
-    display: flex;
-    justify-content: space-around;
-    text-align: left;
-
-    .color {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      margin-right: 5px;
-      border-radius: 3px;
-
-      &.full { background: #e74c3c; }
-      &.morning { background: #e67e22; }
-      &.afternoon { background: #3498db; }
-      &.available { background: #2ecc71; }
-    }
+}
+// ===============================
+// ✨ Animaciones
+// ===============================
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

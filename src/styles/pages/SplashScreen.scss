@@ -9,9 +9,7 @@
   height: 100vh;
   width: 100%;
   /* fondo coherente con el tema primario */
-  background-color: green;
-  // background: linear-gradient(135deg, var(--color-primary, #0077ff), var(--color-secondary, #5ab2ff));
-  // color: #fff;
+  background-color: $primary-color;
   color:black;
   font-family: $font-main;
   animation: fadeIn 0.5s ease-in;

@@ -46,7 +46,7 @@
       transition: 0.2s;
 
       &:hover {
-        background: darken($primary-color, 10%);
+        background: rgba($primary-color, 10%);
       }
     }
 
