@@ -12,7 +12,7 @@
   .auth-box {
     background: white;
     padding: 2rem;
-    radius: $radius;
+    border-radius: $radius;
     box-shadow: $shadow-md;
     width: 100%;
     max-width: 350px;
@@ -33,7 +33,7 @@
 
       input {
         padding: 0.75rem;
-        radius: $radius;
+        border-radius: $radius;
         border: 1px solid #ccc;
       }
 
@@ -42,7 +42,7 @@
         color: white;
         border: none;
         padding: 0.75rem;
-        radius: $radius;
+        border-radius: $radius;
         cursor: pointer;
         font-weight: bold;
         @include transition(0.2s);

@@ -18,7 +18,7 @@
   width: 92%;
   max-width: 420px;
   background: $background-light;
-  radius: 12px;
+  border-radius: $radius-lg;
   padding: 1.25rem;
   box-shadow: 0 8px 30px rgba(0,0,0,0.2);
 }
@@ -45,7 +45,7 @@
   width: 100%;
   padding: 0.6rem;
   border: 1px solid #ddd;
-  radius: $radius-md;
+  border-radius: $radius-md;
   font-size: 0.95rem;
   resize: vertical;
 }
@@ -63,7 +63,7 @@
 .modal button {
   flex: 1;
   padding: 0.6rem 0.8rem;
-  radius: $radius-md;
+  border-radius: $radius-md;
   border: none;
   cursor: pointer;
   font-weight: 600;

@@ -24,7 +24,7 @@
     padding: 0.6rem;
     margin-bottom: 1rem;
     border: 1px solid var(--primary-color);
-    radius: $radius;
+    border-radius: $radius;
     background-color: var(--color-card-bg);
     color: var(--color-text);
   }
@@ -34,7 +34,7 @@
     color: var(--color-card-bg);
     border: none;
     padding: 0.6rem 1.2rem;
-    radius: $radius;
+    border-radius: $radius;
     cursor: pointer;
     transition: 0.3s;
 
