@@ -18,7 +18,7 @@ function App() {
   const [loading, setLoading] = useState(true); // controla el splash inicial
   const [user, setUser] = useState(null);       // estado del usuario autenticado
 
-  // 1️⃣ Detectar autenticación tras mostrar el splash
+  // Detectar autenticación tras mostrar el splash
   useEffect(() => {
     const timer = setTimeout(() => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -30,12 +30,12 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // 2️⃣ Mientras está cargando, mostrar pantalla de inicio
+  // Mientras está cargando, mostrar pantalla de inicio
   if (loading) {
     return <SplashScreen />;
   }
 
-  // 3️⃣ Rutas principales
+  //Rutas principales
   return (
     <Router>
       <Routes>
