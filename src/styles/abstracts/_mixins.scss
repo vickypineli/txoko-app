@@ -8,26 +8,26 @@
 
 @mixin card {
   background: var(--color-card-bg);
-  border-radius: $radius;
+  radius: $radius;
   box-shadow: $shadow;
   padding: 1rem;
 }
 
 @mixin theme-colors($theme) {
-  --color-primary: map-get($theme, primary);
+  --primary-color: map-get($theme, primary);
   --color-secondary: map-get($theme, secondary);
   --color-background: map-get($theme, background);
   --color-text: map-get($theme, text);
   --color-card-bg: map-get($theme, card-bg);
 }
 // 🔹 Mixin base para botones reutilizable en toda la app
-@mixin button-base($bg-color: #007bff, $text-color: #fff) {
+@mixin button-base($bg-color: #007bff, $color-text: #fff) {
   display: inline-block;
   padding: 0.6rem 1rem;
   border: none;
-  border-radius: 8px;
+  radius: 8px;
   background-color: $bg-color;
-  color: $text-color;
+  color: $color-text;
   font-weight: 500;
   font-size: 0.95rem;
   cursor: pointer;

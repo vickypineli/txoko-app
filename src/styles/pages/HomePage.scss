@@ -3,7 +3,7 @@
 
 .home-page {
   padding: 1.5rem;
-  color: $text-color;
+  color: $color-text;
   background-color: $background-light;
   min-height: 100vh;
   display: flex;
@@ -32,7 +32,7 @@
         .btn-small {
           padding: 0.4rem 0.8rem;
           border: none;
-          border-radius: $border-radius;
+          border-radius: $radius;
           background-color: $primary-color;
           color: #fff;
           cursor: pointer;
@@ -59,7 +59,7 @@
     width: 100%;
     max-width: 700px;
     background: #fff;
-    border-radius: $border-radius-lg;
+    border-radius: $radius-lg;
     box-shadow: $shadow-md;
     padding: 1.5rem;
     margin-bottom: 2rem;
@@ -81,7 +81,7 @@
       background-color: $primary-color;
       color: #fff;
       border: none;
-      border-radius: $border-radius;
+      border-radius: $radius;
       padding: 0.8rem 1.4rem;
       font-weight: 600;
       cursor: pointer;
