@@ -3,30 +3,31 @@
 @use "../abstracts/functions" as *;
 
 .profile-page {
-  padding: 2rem;
+  padding: 1.5rem;
   text-align: center;
   background-color: $background-light;
   color: $color-text;
 
   h2 {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
+    font-size: 1.5rem;
   }
 
   .profile-card {
     background: $background-light;
     border-radius: $radius-lg;
     box-shadow: $shadow-lg;
-    padding: 2rem;
+    padding: 1.5rem;
     margin: 0 auto 2rem;
-    max-width: 400px;
+    max-width: 100%;
     position: relative;
 
     .avatar {
-      width: 90px;
-      height: 90px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       color: $background-light;
-      font-size: 2rem;
+      font-size: 1.8rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -36,12 +37,14 @@
       box-shadow: $shadow-lg;
     }
 
-    .profile-info, .profile-form {
-      text-align: left;
+    .profile-info,
+    .profile-form {
+      text-align: center;
 
       p {
         margin: 0.5rem 0;
         color: $color-text-secondary;
+        font-size: 0.95rem;
       }
 
       label {
@@ -55,18 +58,30 @@
         padding: 0.5rem;
         border: 1px solid $color-text-secondary;
         border-radius: $radius-sm;
+        font-size: 0.95rem;
+      }
+      strong {
+        color: $color-text;
+        padding:0  10px;
       }
 
       .buttons {
         display: flex;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 0.8rem;
         margin-top: 1rem;
+
+        @include respond(tablet) {
+          flex-direction: row;
+          justify-content: center;
+        }
       }
     }
 
     button {
-    @include button-base();
+      @include button-base();
       margin-top: 1rem;
+      font-size: 0.95rem;
 
       &.btn-edit {
         background: $primary-color;
@@ -83,37 +98,211 @@
         color: $background-light;
       }
     }
+
+    .profile-inline {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 1rem;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      @include respond(tablet) {
+        flex-direction: row;
+      }
+    }
   }
 
-  .booking-list {
-    list-style: none;
-    padding: 0;
+  .booking-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 1.5rem 0;
+  }
 
-    li {
-      background: $background-light;
-      margin: 0.5rem auto;
-      padding: 0.8rem;
+  .booking-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+    margin: 0 auto;
+    box-shadow: $shadow-md;
+    border-radius: $radius-md;
+    overflow: hidden;
+    font-size: 0.9rem;
+
+    th,
+    td {
+      padding: 0.7rem;
+      border: 1px solid rgba($color-text-secondary, 0.2);
+      text-align: center;
+      color: $color-text;
+      white-space: nowrap;
+    }
+
+    th {
+      background: $background-dark;
+      color: $background-light;
+      font-weight: 600;
+      font-size: 0.95rem;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    tr:nth-child(even) {
+      background: rgba($background-light, 0.05);
+    }
+
+    .btn-delete {
+      @include button-base($danger-color);
+      background: $danger-color;
+      color: $background-light;
+      padding: 0.4rem 0.8rem;
       border-radius: $radius-sm;
-      max-width: 400px;
+      font-size: 0.85rem;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: rgba($danger-color, 0.1);
+      }
+    }
+
+    .past {
+      color: $color-text-secondary;
+      font-size: 0.85rem;
+    }
+
+    // === Tarjetas en móvil ===
+    @include respond(phone) {
+      display: block;
+      min-width: 0;
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid rgba($color-text-secondary, 0.2);
+        border-radius: $radius-sm;
+        padding: 0.8rem;
+        background: $background-light;
+        box-shadow: $shadow-sm;
+      }
+
+      td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.4rem 0.6rem;
+        text-align: left;
+        white-space: normal;
+
+        &:before {
+          content: attr(data-label);
+          font-weight: 600;
+          color: $color-text-secondary;
+          margin-right: 0.5rem;
+        }
+      }
+
+      .btn-delete {
+        margin-left: auto;
+      }
     }
   }
 
   .btn-home {
-    @include button-base ($color-secondary);
+    @include button-base($secondary-color);
     background: $secondary-color;
     color: $background-light;
     margin-top: 2rem;
+    font-size: 1rem;
   }
 
   .loading {
     text-align: center;
     padding: 2rem;
-    color: $color-text-secondary
+    color: $color-text-secondary;
+    font-size: 1rem;
   }
 
-  .small-note { 
-    font-size:0.9rem; 
-    color:#555; 
-    margin-top:6px; 
-}
+  .small-note {
+    font-size: 0.9rem;
+    color: $color-text-secondary;
+    margin-top: 6px;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 1rem;
+  }
+
+  .modal {
+    background: $background-light;
+    padding: 1.5rem;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+
+    h4 {
+      margin-bottom: 0.5rem;
+      color: $color-text;
+      font-size: 1.1rem;
+    }
+
+    p {
+      color: $color-text-secondary;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 1rem;
+
+      @include respond(tablet) {
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      .btn-confirm {
+        @include button-base($danger-color);
+        background: $danger-color;
+        color: $background-light;
+
+        &:hover {
+          background: rgba($danger-color, 0.1);
+        }
+      }
+
+      .btn-cancel {
+        @include button-base($color-text-secondary);
+        background: $color-text-secondary;
+        color: $background-light;
+
+        &:hover {
+          background: rgba($color-text-secondary, 0.1);
+        }
+      }
+    }
+  }
 }
