@@ -1,12 +1,10 @@
 // src/styles/main.scss
 @use "./abstracts/variables" as *;
 @use "./abstracts/mixins" as *;
-@use "./base/reset";
-@use "./base/global";
-@use "./base/typography";
+@use "./abstracts/functions";
+
 @use "./components/buttons";
-@use "./components/cards";
-@use "./components/forms";
+
 
 // Aplicar el tema claro por defecto
 :root {
@@ -20,4 +18,8 @@ body {
   margin: 0;
   padding: 0;
 }
-
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
