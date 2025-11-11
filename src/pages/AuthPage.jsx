@@ -3,6 +3,7 @@ import { useState } from "react";
 import { auth} from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { Utensils } from "lucide-react";
 import "../styles/pages/AuthPage.scss";
 
 function AuthPage() {
@@ -33,26 +34,32 @@ function AuthPage() {
   return (
     <div className="auth-page">
       <div className="auth-box">
-        <h2>Iniciar Sesión</h2>
+     
+        {/* Icono de tenedor y cuchillo */}
+        <Utensils className="logo-svg" size={90} aria-hidden="true" />
+    
+        <h2>Bienvenido de nuevo</h2>
+        <p className="subtitle">Inicia sesión para gestionar tus reservas</p>
 
         <form onSubmit={handleLogin}>
+          <label>Correo electrónico:</label>
           <input
             type="email"
-            placeholder="Correo electrónico"
+            placeholder="tu@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-
+          <label>Contraseñ<area shape="default" coords="" href="" alt="" /></label>
           <input
             type="password"
-            placeholder="Contraseña"
+            placeholder="******"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
 
-          <button type="submit">Entrar</button>
+          <button type="submit">Iniciar Sesiòn</button>
         </form>
 
         {/* <button className="google-btn" onClick={handleGoogleLogin}>

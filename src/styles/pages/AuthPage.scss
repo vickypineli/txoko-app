@@ -7,24 +7,34 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(to bottom right, $primary-color, $secondary-color);
+  background: $background-medium;
 
   .auth-box {
-    background: white;
+    background:$background-light;
     padding: 2rem;
     border-radius: $radius;
-    box-shadow: $shadow-md;
+    box-shadow: $shadow-xl;
     width: 100%;
-    max-width: 350px;
+    max-width: 400px;
     text-align: center;
 
+  .logo-svg {
+    margin: 0 auto 20px auto;
+    display: inline-block;
+    color: $primary-color; /* controla el stroke del SVG */
+    width: 50px;
+    height: 50px;
+
+  }
+
     h2 {
-      color: $primary-color;
-      margin-bottom: 1rem;
+      color: $dark-color;
+      margin-bottom: .75rem;
+      font-weight: 700;
     }
     p {
       margin-bottom: 1rem;
-      color: $color-text;
+      color: $color-text-secondary;
     }
     form {
       display: flex;
@@ -33,11 +43,18 @@
 
       input {
         padding: 0.75rem;
-        border-radius: $radius;
+        border-radius: $radius-sm;
         border: 1px solid #ccc;
+        font-size: 1rem;
+        background-color: $light-color;
+      }
+      label {
+        text-align: left;
+        color: $color-text;
       }
 
       button {
+        margin-top: 1rem;
         background-color: $primary-color;
         color: white;
         border: none;
@@ -45,6 +62,7 @@
         border-radius: $radius;
         cursor: pointer;
         font-weight: bold;
+        font-size: 1rem;
         @include transition(0.2s);
 
         &:hover {
@@ -55,7 +73,7 @@
 
     .register-text {
       margin-top: 1rem;
-      font-size: 0.9rem;
+      font-size: 1.1rem;
 
       span {
         color: $secondary-color;

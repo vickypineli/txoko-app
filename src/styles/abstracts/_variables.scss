@@ -24,17 +24,18 @@ $radius-sm: 6px;
 $radius-md: 10px;
 $radius-lg: 16px;
 
-$shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-$shadow-md: 0 4px 10px rgba(0, 0, 0, 0.1);
-$shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.1);
+$shadow: 0 2px 6px rgba(22, 73, 87, 0.438);
+$shadow-sm: 0 1px 3px rgba(22, 73, 87, 0.438);
+$shadow-md: 0 4px 10px rgba(22, 73, 87, 0.438);
+$shadow-lg: 0 8px 20px rgba(22, 73, 87, 0.438);
+$shadow-xl: 0 16px 40px rgba(22, 73, 87, 0.438);
 
 $primary-color:  #008080;
 $secondary-color: #D2691E;
-$white-color: #fffff33;
+$white-color: #ffffff;
 $danger-color: #ca2a30;
 $light-color: #dbf0f0;
-$dark-color: #333;
+$dark-color: #1a1a1a;
 $color-secondary: #D2691E;
 $color-success: #4f596652;
 $color-background: #E0EEEE;
@@ -45,8 +46,8 @@ $color-text: #333;
 $color-text-secondary: #666;
 
 
-$background-light: #E0EEEE;
-$background-medium: #f0ebff;
+$background-light: #fff;
+$background-medium: #E0EEEE;
 $background-dark: #333;
 $background-modal:rgba(0,0,0,0.45);
 
