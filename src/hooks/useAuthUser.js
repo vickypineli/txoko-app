@@ -1,4 +1,6 @@
 // src/hooks/useAuthUser.js
+//Simplifica toda la lógica de autenticación y carga del perfil.
+
 import { useState, useEffect } from "react";
 import { auth } from "../firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";

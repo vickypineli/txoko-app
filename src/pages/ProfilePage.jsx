@@ -2,16 +2,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebaseConfig";
-import {
-  doc,
-  getDoc,
-  updateDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-  deleteDoc,
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { getUserBookings, deleteBooking } from "../services/bookingService";
 import "../styles/pages/ProfilePage.scss";
 
 function ProfilePage() {
@@ -33,6 +25,7 @@ function ProfilePage() {
 
   const navigate = useNavigate();
 
+  // 🧩 Cargar datos del usuario y reservas al iniciar sesión
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
@@ -41,42 +34,35 @@ function ProfilePage() {
           loadUserProfile(currentUser.uid),
           loadUserBookings(currentUser.uid),
         ]);
+      } else {
+        navigate("/auth");
       }
       setLoading(false);
     });
     return () => unsubscribe();
-  }, []);
+  }, [navigate]);
 
+  // 🔹 Cargar perfil del usuario
   const loadUserProfile = async (uid) => {
     try {
       const snap = await getDoc(doc(db, "users", uid));
       if (snap.exists()) setProfile(snap.data());
     } catch (error) {
-      console.error("Error al obtener perfil:", error);
+      console.error("❌ Error al obtener perfil:", error);
     }
   };
 
+  // 🔹 Cargar reservas del usuario desde bookingService
   const loadUserBookings = async (uid) => {
     try {
-      const q = query(collection(db, "bookings"), where("userId", "==", uid));
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      const currentYear = new Date().getFullYear();
-      const filtered = data.filter(
-        (b) => new Date(b.date).getFullYear() === currentYear
-      );
-
-      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-      setBookings(filtered);
+      const data = await getUserBookings(uid);
+      setBookings(data);
     } catch (error) {
-      console.error("Error al obtener reservas:", error);
+      console.error("❌ Error al obtener reservas del usuario:", error);
     }
   };
 
+  // 🧾 Editar perfil
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
@@ -89,11 +75,12 @@ function ProfilePage() {
       setEditing(false);
       alert("✅ Perfil actualizado correctamente");
     } catch (error) {
-      console.error("Error al actualizar perfil:", error);
+      console.error("❌ Error al actualizar perfil:", error);
       alert("Error al actualizar el perfil");
     }
   };
 
+  // 🗑️ Eliminar reserva
   const openDeleteModal = (booking) => {
     setSelectedBooking(booking);
     setModalOpen(true);
@@ -102,16 +89,14 @@ function ProfilePage() {
   const confirmDelete = async () => {
     if (!selectedBooking) return;
     try {
-      await deleteDoc(doc(db, "bookings", selectedBooking.id));
-      setBookings((prev) =>
-        prev.filter((b) => b.id !== selectedBooking.id)
-      );
+      await deleteBooking(selectedBooking.id);
+      setBookings((prev) => prev.filter((b) => b.id !== selectedBooking.id));
       setModalOpen(false);
       setSelectedBooking(null);
       alert("🗑️ Reserva eliminada correctamente");
     } catch (error) {
-      console.error("Error al eliminar reserva:", error);
-      alert("❌ Error al eliminar la reserva.");
+      console.error("❌ Error al eliminar reserva:", error);
+      alert("Error al eliminar la reserva.");
     }
   };
 
@@ -120,6 +105,7 @@ function ProfilePage() {
     setSelectedBooking(null);
   };
 
+  // 🧍 Iniciales y color de avatar
   const getInitials = () => {
     const nombre = profile.nombre?.trim().split(" ")[0] || "";
     const apellidos = profile.apellidos?.trim().split(" ")[0] || "";
@@ -136,6 +122,7 @@ function ProfilePage() {
     return `hsl(${hue}, 70%, 50%)`;
   };
 
+  // 📆 Formatear fecha
   const formatDate = (dateStr) => {
     const [year, month, day] = dateStr.split("-");
     return `${day}-${month}-${year}`;
@@ -258,15 +245,15 @@ function ProfilePage() {
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       )}
 
       <button className="btn-home" onClick={() => navigate("/home")}>
-        🏠 Volver al inicio
+        Volver al inicio
       </button>
 
+      {/*  Modal Confirmación */}
       {modalOpen && (
         <div className="modal-overlay">
           <div className="modal">
@@ -291,6 +278,3 @@ function ProfilePage() {
 }
 
 export default ProfilePage;
-
-
-

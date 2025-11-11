@@ -1,4 +1,5 @@
 // src/utils/format.js
+//funciones puras que se repiten entre ProfilePage y HomePage.
 
 /**
  * Devuelve las iniciales del nombre y apellidos.

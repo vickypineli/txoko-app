@@ -151,4 +151,93 @@
       }
     }
   }
+  // 🎯 Título de la sección
+h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: $secondary-color;
+  text-align: center;
+}
+
+.no-bookings {
+  text-align: center;
+  color: $color-text-secondary;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.bookings-list {
+  width: 80%;
+  max-width: 400px;
+  margin: 0 auto 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0 2rem;
+
+  .booking-row {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: $radius;
+    box-shadow: $shadow-sm;
+    padding: 0.6rem 0.8rem;
+    transition: background 0.2s ease-in-out;
+
+    // &:hover {
+    //   background: rgba($primary-color, 0.06);
+    // }
+
+    .booking-color {
+      width: 20px;
+      height: 12px;
+      border-radius: 3px;
+      margin-right: 0.8rem;
+      flex-shrink: 0;
+
+      &.morning {
+        background-color: #3498db; // azul
+      }
+      &.afternoon {
+        background-color: #f1c40f; // amarillo
+      }
+      &.full {
+        background-color: #e74c3c; // rojo
+      }
+    }
+
+    .booking-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      font-size: 0.95rem;
+      color: $color-text;
+
+      .booking-date {
+        font-weight: 600;
+      }
+
+      .booking-type {
+        color: $primary-color;
+      }
+
+      .booking-notes {
+        color: $color-text-secondary;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+@include respond(tablet) {
+  .bookings-list {
+    max-width: 800px;
+    .booking-row {
+      padding: 0.8rem 1.2rem;
+    }
+  }
+}
+
 }

@@ -1,32 +1,36 @@
 // src/services/bookingService.js
-
 import { db } from "../firebaseConfig";
-import { collection, addDoc, getDocs, query, where, Timestamp, orderBy } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  deleteDoc,
+  doc,
+  Timestamp,
+} from "firebase/firestore";
 
-//Crear una reserva validando que la fecha no hay sido reservada. 
-// y que el usuario no tenga mas de 5 fines de semana.
+/**
+ * 🟢 Crear una reserva validando:
+ * - Que la fecha/turno no esté ya ocupada.
+ * - Que el usuario no supere 5 fines de semana reservados al año.
+ */
 export const createBooking = async (bookingData) => {
   const { date, type, userId } = bookingData;
 
   try {
-    // Validar reservas existentes del mismo día
-    const duplicateCheck = query(
-      collection(db, "bookings"),
-      where("date", "==", date)
-    );
+    // 1️⃣ Verificar conflicto en la misma fecha
+    const duplicateCheck = query(collection(db, "bookings"), where("date", "==", date));
     const snap = await getDocs(duplicateCheck);
 
     let conflict = false;
     snap.forEach((doc) => {
       const b = doc.data();
 
-      // 🔴 Si ya existe una reserva de día completo, conflicto
       if (b.type === "full") conflict = true;
-
-      // 🔴 Si intentas reservar día completo y hay alguna reserva, conflicto
       if (type === "full" && b.type !== "") conflict = true;
-
-      // 🔴 Si ambos son el mismo turno, conflicto
       if (b.type === type) conflict = true;
     });
 
@@ -34,7 +38,7 @@ export const createBooking = async (bookingData) => {
       throw new Error("⚠️ Ya existe una reserva para ese día o turno. Elige otra fecha.");
     }
 
-    // Validar que el usuario no tenga más de 5 fines de semana reservados
+    // 2️⃣ Verificar límite de 5 fines de semana por usuario
     const userSnap = await getDocs(
       query(collection(db, "bookings"), where("userId", "==", userId))
     );
@@ -43,7 +47,7 @@ export const createBooking = async (bookingData) => {
     userSnap.forEach((doc) => {
       const b = doc.data();
       const d = new Date(b.date);
-      const day = d.getDay(); // 0=domingo, 6=sábado
+      const day = d.getDay(); // 0 = domingo, 6 = sábado
       if (day === 0 || day === 6) weekendCount++;
     });
 
@@ -53,45 +57,83 @@ export const createBooking = async (bookingData) => {
       throw new Error("⚠️ No puedes reservar más de 5 fines de semana al año.");
     }
 
-    // Si pasa las validaciones, guardamos la reserva
+    // 3️⃣ Crear la reserva
     await addDoc(collection(db, "bookings"), {
       ...bookingData,
       createdAt: Timestamp.now(),
     });
+
+    console.log("✅ Reserva creada correctamente");
   } catch (error) {
-    console.error("Error al crear reserva:", error);
+    console.error("❌ Error al crear reserva:", error);
     throw error;
   }
 };
 
-//  Obtener todas las reservas
+/**
+ * 📄 Obtener todas las reservas (admin, home, etc.)
+ */
 export const getAllBookings = async () => {
   try {
-    const snap = await getDocs(collection(db, "bookings"));
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-};
-
-// 🔹 Obtener reservas de un usuario
-export const getUserBookings = async (uid) => {
-  try {
-    const q = query(
-      collection(db, "bookings"),
-      where("userId", "==", uid),
-      orderBy("createdAt", "desc")
-    );
+    const q = query(collection(db, "bookings"), orderBy("date", "asc"));
     const snap = await getDocs(q);
     return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
   } catch (err) {
-    console.error(err);
+    console.error("❌ Error al obtener todas las reservas:", err);
     return [];
   }
 };
 
+/**
+ * 👤 Obtener reservas de un usuario específico
+ * Filtra solo las del año actual y las ordena por fecha descendente.
+ */
+export const getUserBookings = async (uid) => {
+  try {
+    const q = query(collection(db, "bookings"), where("userId", "==", uid));
+    const snapshot = await getDocs(q);
+    const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+// ✅ Filtrar solo reservas del año actual
+    const currentYear = new Date().getFullYear();
+    const filtered = data.filter(
+      (b) => new Date(b.date).getFullYear() === currentYear
+    );
 
+      // ✅ Ordenar de más reciente a más antigua
+    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+    return filtered;
+  } catch (error) {
+    console.error("❌ Error al obtener reservas del usuario:", error);
+    return [];
+  }
+};
+
+/**
+ * 🗑️ Eliminar una reserva
+ */
+export const deleteBooking = async (bookingId) => {
+  try {
+    await deleteDoc(doc(db, "bookings", bookingId));
+    console.log("🗑️ Reserva eliminada correctamente");
+  } catch (error) {
+    console.error("❌ Error al eliminar reserva:", error);
+    throw error;
+  }
+};
+
+/**
+ * 🔍 Obtener reservas filtradas por fecha
+ */
+export const getBookingsByDate = async (date) => {
+  try {
+    const q = query(collection(db, "bookings"), where("date", "==", date));
+    const snap = await getDocs(q);
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  } catch (err) {
+    console.error("❌ Error al obtener reservas por fecha:", err);
+    return [];
+  }
+};
 
 
 

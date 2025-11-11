@@ -1,16 +1,19 @@
 // src/components/Calendar.jsx
-// src/components/Calendar.jsx
 import { useState, useEffect } from "react";
 import "../styles/components/Calendar.scss";
 import { auth } from "../firebaseConfig";
 
-function Calendar({ bookings = [], onDayClick }) {
+function Calendar({ bookings = [], onDayClick, onMonthChange }) {
   const [month, setMonth] = useState(new Date());
   const [days, setDays] = useState([]);
   const user = auth.currentUser;
 
   useEffect(() => {
     if (bookings) generateCalendar();
+    // Cuando cambie el mes, notificamos al padre
+    if (onMonthChange) {
+      onMonthChange(month.getMonth() + 1, month.getFullYear());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month, bookings, user]);
 
@@ -93,6 +96,7 @@ function Calendar({ bookings = [], onDayClick }) {
     setDays([...prevMonthDays, ...currentMonthDays, ...nextMonthDays]);
   };
 
+  // 🔹 Navegación de mes anterior/siguiente
   const prevMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1));
   const nextMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1));
 
@@ -100,14 +104,14 @@ function Calendar({ bookings = [], onDayClick }) {
 
   return (
     <div className="calendar">
-      {/* 🧭 Cabecera del mes */}
+      {/* Cabecera del mes */}
       <div className="calendar-header">
         <button onClick={prevMonth}>←</button>
         <h3>{month.toLocaleString("es-ES", { month: "long", year: "numeric" })}</h3>
         <button onClick={nextMonth}>→</button>
       </div>
 
-      {/* 🗓️ Aviso de restricciones */}
+      {/* Aviso de restricciones */}
       <p className="calendar-info">
         Solo se pueden reservar fechas dentro del año <strong>{currentYear}</strong> y posteriores a hoy.
       </p>
@@ -142,9 +146,21 @@ function Calendar({ bookings = [], onDayClick }) {
               onClick={() => {
                 if (!isDisabled && onDayClick) onDayClick(d.date);
               }}
+              title={
+                d.bookedByUser
+                  ? "Tu reserva"
+                  : d.status === "full"
+                  ? "Ocupado todo el día"
+                  : d.status === "morning"
+                  ? "Disponible por la tarde"
+                  : d.status === "afternoon"
+                  ? "Disponible por la mañana"
+                  : "Disponible"
+              }
             >
               {d.day}
             </div>
+
           );
         })}
       </div>
@@ -163,6 +179,7 @@ function Calendar({ bookings = [], onDayClick }) {
 }
 
 export default Calendar;
+
 
 
 
