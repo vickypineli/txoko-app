@@ -2,13 +2,17 @@
 @use "./abstracts/variables" as *;
 @use "./abstracts/mixins" as *;
 @use "./abstracts/functions";
-
 @use "./components/buttons";
 
 
 // Aplicar el tema claro por defecto
 :root {
   @include theme-colors($theme-light);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
@@ -18,8 +22,4 @@ body {
   margin: 0;
   padding: 0;
 }
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+
