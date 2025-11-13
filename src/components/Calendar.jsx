@@ -100,7 +100,7 @@ function Calendar({ bookings = [], onDayClick, onMonthChange }) {
   const prevMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1));
   const nextMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1));
 
-  const currentYear = new Date().getFullYear();
+  // const currentYear = new Date().getFullYear();
 
   return (
     <div className="calendar">
@@ -111,10 +111,10 @@ function Calendar({ bookings = [], onDayClick, onMonthChange }) {
         <button onClick={nextMonth}>→</button>
       </div>
 
-      {/* Aviso de restricciones */}
+      {/* Aviso de restricciones
       <p className="calendar-info">
         Solo se pueden reservar fechas dentro del año <strong>{currentYear}</strong> y posteriores a hoy.
-      </p>
+      </p> */}
 
       {/* Días de la semana */}
       <div className="calendar-weekdays">

@@ -1,3 +1,4 @@
+//src/pages/HomePage.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
@@ -21,6 +22,7 @@ function HomePage() {
 
   const navigate = useNavigate();
   const { user, profile, loading } = useAuthUser();
+  const currentYear = new Date().getFullYear();
 
   //Cargar reservas globales y del usuario
   useEffect(() => {
@@ -49,7 +51,7 @@ function HomePage() {
     }
   };
 
-  // 🚪 Cerrar sesión
+  // Cerrar sesión
   const handleLogout = async () => {
     await signOut(auth);
     navigate("/auth");
@@ -91,74 +93,83 @@ function HomePage() {
             >
               {getInitials(profile.nombre, profile.apellidos)}
             </div>
+
             <div className="user-actions">
+              {user?.email === "admin@admin.com" && (
+                 <button onClick={() => navigate("/admin")} className="btn-small admin">
+                 Admin
+                </button>
+             )}
               <button onClick={goToProfile} className="btn-small">
-                Perfil
+                Mi Perfil
               </button>
               <button onClick={handleLogout} className="btn-small logout">
-                Salir
+                Cerrar Sesión
               </button>
             </div>
           </div>
         )}
       </header>
-
-      {/* Calendario */}
-      <section className="calendar-section">
+      <section className="calendar-header">
         <h2>Calendario de Reservas</h2>
-        <Calendar
-          bookings={bookings}
-          onDayClick={handleDayClick}
-          onMonthChange={(month, year) => {
-            setSelectedMonth(month);
-            setSelectedYear(year);
-          }}
-        />
+              {/* Aviso de restricciones */}
+        <p className="calendar-info">
+           Solo se pueden reservar fechas dentro del año <strong>{currentYear}</strong>.
+        </p>
       </section>
+      {/* Calendario */}
+      <div className="calendar-container">
+        
+        <div className="calendar-section">
+          <Calendar
+            bookings={bookings}
+            onDayClick={handleDayClick}
+            onMonthChange={(month, year) => {
+              setSelectedMonth(month);
+              setSelectedYear(year);
+            }}
+        />
+        </div>
+        {/* Reservas filtradas por mes */}
+        <div className="bookings-section">
+          <h3>
+            Reservas de{" "}
+             {new Date(selectedYear, selectedMonth - 1).toLocaleString("es-ES", {
+              month: "long",
+              year: "numeric",
+           })}
+          </h3>
 
-      {/* Botón Nueva Reserva */}
-      {/* <div className="actions">
-        <button onClick={() => setShowModal(true)}>Nueva Reserva</button>
-      </div> */}
-
-      {/* Reservas filtradas por mes */}
-      <h3>
-        Reservas de{" "}
-        {new Date(selectedYear, selectedMonth - 1).toLocaleString("es-ES", {
-          month: "long",
-          year: "numeric",
-        })}
-      </h3>
-
-      {filteredBookings.length === 0 ? (
-        <p className="no-bookings">No hay reservas para este mes.</p>
-      ) : (
-        <div className="bookings-list">
-          {filteredBookings.map((booking) => (
-            <div key={booking.id} className="booking-row">
-              <span className={`booking-color ${booking.type}`}></span>
-              <div className="booking-info">
-                <span className="booking-date">
-                  {new Date(booking.date).toLocaleDateString("es-ES", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })}
-                </span>
-                <span className="booking-type">
+        {filteredBookings.length === 0 ? (
+          <p className="no-bookings">No hay reservas para este mes.</p>
+        ) : (
+          <div className="bookings-list">
+            {filteredBookings.map((booking) => (
+              <div key={booking.id} className="booking-row">
+                <span className={`booking-color ${booking.type}`}></span>
+                <div className="booking-info">
+                  <span className="booking-date">
+                    {new Date(booking.date).toLocaleDateString("es-ES", {
+                      day: "2-digit",
+                       month: "2-digit",
+                      year: "numeric",
+                    })}
+                  </span>
+                  <span className="booking-type">
                   {booking.type === "morning"
                     ? "Mañana"
                     : booking.type === "afternoon"
                     ? "Tarde"
                     : "Día completo"}
-                </span>
-                {booking.notes && <span className="booking-notes">— {booking.notes}</span>}
+                  </span>
+                  {booking.notes && <span className="booking-notes">— {booking.notes}</span>}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        )}
         </div>
-      )}
-
+      </div>
       {/* Modal de reservas */}
       {showModal && (
         <ReservationModal

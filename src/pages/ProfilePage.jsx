@@ -25,7 +25,7 @@ function ProfilePage() {
 
   const navigate = useNavigate();
 
-  // 🧩 Cargar datos del usuario y reservas al iniciar sesión
+  // Cargar datos del usuario y reservas al iniciar sesión
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
@@ -42,7 +42,7 @@ function ProfilePage() {
     return () => unsubscribe();
   }, [navigate]);
 
-  // 🔹 Cargar perfil del usuario
+  // Cargar perfil del usuario
   const loadUserProfile = async (uid) => {
     try {
       const snap = await getDoc(doc(db, "users", uid));
@@ -52,7 +52,7 @@ function ProfilePage() {
     }
   };
 
-  // 🔹 Cargar reservas del usuario desde bookingService
+  // Cargar reservas del usuario desde bookingService
   const loadUserBookings = async (uid) => {
     try {
       const data = await getUserBookings(uid);
@@ -62,7 +62,7 @@ function ProfilePage() {
     }
   };
 
-  // 🧾 Editar perfil
+  // Editar perfil
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
@@ -80,7 +80,7 @@ function ProfilePage() {
     }
   };
 
-  // 🗑️ Eliminar reserva
+  // Eliminar reserva
   const openDeleteModal = (booking) => {
     setSelectedBooking(booking);
     setModalOpen(true);
@@ -105,7 +105,7 @@ function ProfilePage() {
     setSelectedBooking(null);
   };
 
-  // 🧍 Iniciales y color de avatar
+  // Iniciales y color de avatar
   const getInitials = () => {
     const nombre = profile.nombre?.trim().split(" ")[0] || "";
     const apellidos = profile.apellidos?.trim().split(" ")[0] || "";

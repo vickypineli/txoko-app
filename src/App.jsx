@@ -4,12 +4,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 
+
 // Páginas
 import SplashScreen from "./pages/SplashScreen";
 import AuthPage from "./pages/AuthPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import Profile from "./pages/ProfilePage";
+import AdminPage from "./pages/AdminPage";
 
 // Estilos globales
 import "./styles/main.scss";
@@ -68,7 +70,17 @@ function App() {
           path="/profile"
           element={user ? <Profile /> : <Navigate to="/auth" />}
         />
-
+        {/* Admin Page */}
+        <Route
+          path="/admin"
+          element={
+            user && user.email === "admin@admin.com" ? (
+              <AdminPage />
+            ) : (
+              <Navigate to="/auth" />
+            )
+          }
+        />
         {/* Redirección por defecto */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

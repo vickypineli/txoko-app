@@ -8,6 +8,7 @@ import {
   where,
   orderBy,
   deleteDoc,
+  updateDoc,
   doc,
   Timestamp,
 } from "firebase/firestore";
@@ -85,7 +86,7 @@ export const getAllBookings = async () => {
 };
 
 /**
- * 👤 Obtener reservas de un usuario específico
+ * Obtener reservas de un usuario específico
  * Filtra solo las del año actual y las ordena por fecha descendente.
  */
 export const getUserBookings = async (uid) => {
@@ -134,6 +135,27 @@ export const getBookingsByDate = async (date) => {
     return [];
   }
 };
+
+/**
+ *Obtener TODAS las reservas(para el panel de admin)
+ */
+
+export const getAllBookingsAdmin = async () => {
+  const querySnapshot = await getDocs(collection(db, "bookings"));
+  return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+};
+
+// Actualizar reserva
+export const updateBooking = async (id, updatedData) => {
+  const bookingRef = doc(db, "bookings", id);
+  await updateDoc(bookingRef, updatedData);
+};
+
+// // Eliminar reserva
+// export const deleteBooking = async (id) => {
+//   const bookingRef = doc(db, "bookings", id);
+//   await deleteDoc(bookingRef);
+// };
 
 
 

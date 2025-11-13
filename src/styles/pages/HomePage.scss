@@ -4,116 +4,145 @@
 .home-page {
   padding: 1.2rem;
   color: $color-text;
-  background-color: $background-light;
+  background-color: $light-color;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  .home-header {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+ .home-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+
+  // 💻 En pantallas grandes: logo y usuario en fila
+  @include respond(tablet) {
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+  }
+
+  .logo-box {
+    display: none; // 🚫 Oculto en móvil
 
     @include respond(tablet) {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .logo-svg {
+      color: $primary-color;
+      width: 40px;
+      height: 40px;
+    }
+
+    .home-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: $primary-color;
+    }
+  }
+
+  .user-header {
+    width:80%;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row; // 📱 Fila en móvil
+    align-items: center;
+    gap: 0.8rem;
+
+    @include respond(tablet) {
+      width: auto; 
+      flex-direction: column; // 💻 Columna en escritorio
+      justify-content: space-around;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: $shadow-sm;
+      transition: transform 0.2s ease-in-out;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+
+    .user-actions {
+      display: flex;
       flex-direction: row;
-      justify-content: space-between;
-    }
+      gap: 1rem;
 
-    .logo-box {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-
-      .logo-svg {
-        color: $primary-color;
-        width: 40px;
-        height: 40px;
-      }
-
-      .home-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: $primary-color;
-      }
-    }
-
-    .user-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.8rem;
-      margin-top: 0.8rem;
-
-      @include respond(tablet) {
-        margin-top: 0;
-      }
-
-      .user-avatar {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
+      .btn-small {
+        padding: 0.4rem 0.8rem;
+        border: none;
+        border-radius: $radius;
+        background-color: $primary-color;
         color: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: 600;
-        font-size: 1rem;
         cursor: pointer;
-        box-shadow: $shadow-sm;
-        transition: transform 0.2s ease-in-out;
+        font-size: 0.8rem;
+        font-weight: 500;
+        @include transition(0.2s);
 
         &:hover {
-          transform: scale(1.05);
-        }
-      }
-
-      .user-info {
-        text-align: right;
-
-        .username {
-          font-weight: 600;
-          color: $primary-color;
-          margin-bottom: 0.3rem;
+          opacity: 0.8;
         }
 
-        .user-actions {
-          display: flex;
-          gap: 0.4rem;
-
-          .btn-small {
-            padding: 0.4rem 0.8rem;
-            border: none;
-            border-radius: $radius;
-            background-color: $primary-color;
-            color: #fff;
-            cursor: pointer;
-            font-size: 0.8rem;
-            @include transition(0.2s);
-
-            &:hover {
-              opacity: 0.8;
-            }
-
-            &.logout {
-              background-color: $danger-color;
-            }
-          }
+        &.logout {
+          background-color: $danger-color;
+        }
+        &.admin {
+          background-color: $secondary-color;
         }
       }
     }
   }
+}
+  .calendar-header{
+    margin-bottom: 1.5rem;
+    text-align:center;
+    color: $primary-color;
+    .calendar-info{
+      font-size:0.95rem;
+      color: $color-text-secondary;
+      margin-top: 1rem;
+    }
+  }
+  .calendar-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
+  }
+  @include respond(tablet) {
+    .calendar-container{
+      flex-direction: row;
+    }
+  }
   .calendar-section {
     width: 100%;
     max-width: 700px;
     background: #fff;
     border-radius: $radius-lg;
     box-shadow: $shadow-md;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+    padding: 0 1rem 2rem 1rem;
+    margin-bottom: 1rem;
     text-align: center;
 
     h2 {
@@ -151,93 +180,99 @@
       }
     }
   }
-  // 🎯 Título de la sección
-h3 {
-  margin-top: 2rem;
-  margin-bottom: 0.8rem;
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: $secondary-color;
-  text-align: center;
-}
-
-.no-bookings {
-  text-align: center;
-  color: $color-text-secondary;
-  font-size: 0.95rem;
-  margin-bottom: 2rem;
-}
-
-.bookings-list {
-  width: 80%;
-  max-width: 400px;
-  margin: 0 auto 3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  padding: 0 2rem;
-
-  .booking-row {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    border-radius: $radius;
-    box-shadow: $shadow-sm;
-    padding: 0.6rem 0.8rem;
-    transition: background 0.2s ease-in-out;
-
-    // &:hover {
-    //   background: rgba($primary-color, 0.06);
-    // }
-
-    .booking-color {
-      width: 20px;
-      height: 12px;
-      border-radius: 3px;
-      margin-right: 0.8rem;
-      flex-shrink: 0;
-
-      &.morning {
-        background-color: #3498db; // azul
-      }
-      &.afternoon {
-        background-color: #f1c40f; // amarillo
-      }
-      &.full {
-        background-color: #e74c3c; // rojo
-      }
-    }
-
-    .booking-info {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-      font-size: 0.95rem;
-      color: $color-text;
-
-      .booking-date {
-        font-weight: 600;
-      }
-
-      .booking-type {
-        color: $primary-color;
-      }
-
-      .booking-notes {
-        color: $color-text-secondary;
-        font-style: italic;
-      }
-    }
+    // 🎯 Título de la sección
+  h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.8rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: $secondary-color;
+    text-align: center;
   }
-}
 
-@include respond(tablet) {
+  .no-bookings {
+    text-align: center;
+    color: $color-text-secondary;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
   .bookings-list {
-    max-width: 800px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0 1rem;
+
     .booking-row {
-      padding: 0.8rem 1.2rem;
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border-radius: $radius;
+      box-shadow: $shadow-sm;
+      padding: 0.6rem 0.8rem;
+      transition: background 0.2s ease-in-out;
+
+      // &:hover {
+      //   background: rgba($primary-color, 0.06);
+      // }
+
+      .booking-color {
+        width: 20px;
+        height: 12px;
+        border-radius: 3px;
+        margin-right: 0.8rem;
+        flex-shrink: 0;
+
+        &.morning {
+          background-color: #3498db; // azul
+        }
+        &.afternoon {
+          background-color: #f1c40f; // amarillo
+        }
+        &.full {
+          background-color: #e74c3c; // rojo
+        }
+      }
+
+      .booking-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        font-size: 0.95rem;
+        color: $color-text;
+
+        .booking-date {
+          font-weight: 600;
+        }
+
+        .booking-type {
+          color: $primary-color;
+        }
+
+        .booking-notes {
+          color: $color-text-secondary;
+          font-style: italic;
+        }
+      }
     }
   }
-}
+  .loading {
+    text-align: center;
+    color: $color-text-secondary;
+    font-size: 3rem;
+    margin: 2rem 0;
+  }
+
+  @include respond(tablet) {
+    .bookings-list {
+      max-width: 800px;
+      .booking-row {
+        padding: 0.8rem 1.2rem;
+      }
+    }
+  }
 
 }
