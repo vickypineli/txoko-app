@@ -32,3 +32,4 @@ export function useAuthUser() {
 
   return { user, profile, loading };
 }
+export default useAuthUser;

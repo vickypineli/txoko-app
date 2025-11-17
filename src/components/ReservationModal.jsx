@@ -1,14 +1,17 @@
 // src/components/ReservationModal.jsx
 import { useState, useEffect } from "react";
 import { createBooking } from "../services/bookingService";
+import { getAllUsers, getUserById } from "../services/userService";
 import { auth } from "../firebaseConfig";
 import "../styles/components/ReservationModal.scss";
 
-function ReservationModal({ date, existingBookings = [], onClose, onSaved }) {
+function ReservationModal({ date, existingBookings = [], onClose, onSaved, isAdmin = false }) {
   const [formData, setFormData] = useState({
     date: date || "",
     type: "morning",
     notes: "",
+    userId: "",
+    userName: "",
   });
   const [loading, setLoading] = useState(false);
   const [availability, setAvailability] = useState({
@@ -16,23 +19,58 @@ function ReservationModal({ date, existingBookings = [], onClose, onSaved }) {
     afternoon: true,
     full: true,
   });
+  const [users, setUsers] = useState([]);
 
-  const user = auth.currentUser;
+
+
+      // Cargar datos del usuario logueado si NO es admin
+    const user = auth.currentUser;
+
+    useEffect(() => {
+      if (!isAdmin && user) {
+        // El usuario normal NO elige usuario → lo rellenamos automáticamente
+        getUserById(user.uid).then(profile => {
+          if (profile) {
+            setFormData(prev => ({
+              ...prev,
+              userId: profile.id,
+              userName: `${profile.nombre} ${profile.apellidos}`.trim()
+            }));
+          }
+        });
+      }
+    }, [isAdmin, user]);
+
+
 
   // Sincronizar la fecha entrante
   useEffect(() => {
-    if (date) setFormData((prev) => ({ ...prev, date }));
+    if (date) setFormData(prev => ({ ...prev, date }));
   }, [date]);
 
-  // Calcular disponibilidad cuando cambie la fecha o las reservas existentes
+  // Cargar usuarios si es admin
   useEffect(() => {
-    const reservedTypes = existingBookings.map((b) => b.type);
+    if (isAdmin) {
+      getAllUsers().then(all => {
+        const filtered = all.filter(u => u.email !== "admin@admin.com");
+        setUsers(filtered);
+      }).catch(err => console.error("Error cargando usuarios:", err));
+    }
+  }, [isAdmin]);
+// Si NO es admin, autocompletar usuario
+useEffect(() => {
+  if (!isAdmin && user) {
+    setFormData(prev => ({
+      ...prev,
+      userId: user.uid,
+      userName: user.displayName || user.email || "Usuario"
+    }));
+  }
+}, [isAdmin, user]);
 
-    // Regla:
-    // - Si hay "full" -> todo ocupado
-    // - Si hay "morning" -> morning y full NO disponibles, afternoon disponible
-    // - Si hay "afternoon" -> afternoon y full NO disponibles, morning disponible
-    // - Si no hay reservas -> todo disponible
+  // Calcular disponibilidad
+  useEffect(() => {
+    const reservedTypes = existingBookings.map(b => b.type);
     const hasFull = reservedTypes.includes("full");
     const hasMorning = reservedTypes.includes("morning");
     const hasAfternoon = reservedTypes.includes("afternoon");
@@ -48,59 +86,44 @@ function ReservationModal({ date, existingBookings = [], onClose, onSaved }) {
     } else if (hasMorning) {
       morningAvailable = false;
       afternoonAvailable = true;
-      fullAvailable = false; // no se puede reservar full si una franja ya está ocupada
+      fullAvailable = false;
     } else if (hasAfternoon) {
       morningAvailable = true;
       afternoonAvailable = false;
       fullAvailable = false;
-    } else {
-      morningAvailable = true;
-      afternoonAvailable = true;
-      fullAvailable = true;
     }
 
-    setAvailability({
-      morning: morningAvailable,
-      afternoon: afternoonAvailable,
-      full: fullAvailable,
-    });
+    setAvailability({ morning: morningAvailable, afternoon: afternoonAvailable, full: fullAvailable });
 
-    // Si el tipo actualmente seleccionado no está disponible, ajustar al primero disponible
-    const currentlySelected = formData.type;
-    const firstAvailable = morningAvailable
-      ? "morning"
-      : afternoonAvailable
-      ? "afternoon"
-      : fullAvailable
-      ? "full"
-      : null;
-
-    if (currentlySelected && !(
-      (currentlySelected === "morning" && morningAvailable) ||
-      (currentlySelected === "afternoon" && afternoonAvailable) ||
-      (currentlySelected === "full" && fullAvailable)
-    )) {
-      setFormData((prev) => ({ ...prev, type: firstAvailable || "" }));
+    // Ajustar tipo seleccionado si ya no está disponible
+    const current = formData.type;
+    const firstAvailable = morningAvailable ? "morning" : afternoonAvailable ? "afternoon" : fullAvailable ? "full" : null;
+    if (current && !((current === "morning" && morningAvailable) || (current === "afternoon" && afternoonAvailable) || (current === "full" && fullAvailable))) {
+      setFormData(prev => ({ ...prev, type: firstAvailable || "" }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date, existingBookings]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) return alert("Debes iniciar sesión para reservar.");
     if (!formData.date) return alert("Selecciona una fecha.");
+    if (!isAdmin && !formData.userId) {
+      return alert("No se pudo identificar el usuario logueado.");
+    }
 
-    // Validación final: comprobar que el turno elegido está disponible
-    if (
-      (formData.type === "morning" && !availability.morning) ||
-      (formData.type === "afternoon" && !availability.afternoon) ||
-      (formData.type === "full" && !availability.full)
-    ) {
+    if (isAdmin && !formData.userId) {
+      return alert("Debes seleccionar un usuario.");
+    }
+
+    if ((formData.type === "morning" && !availability.morning) ||
+        (formData.type === "afternoon" && !availability.afternoon) ||
+        (formData.type === "full" && !availability.full)) {
       return alert("Ese turno ya no está disponible. Elige otro.");
     }
 
@@ -110,8 +133,8 @@ function ReservationModal({ date, existingBookings = [], onClose, onSaved }) {
         date: formData.date,
         type: formData.type,
         notes: formData.notes || "",
-        userId: user.uid,
-        userName: user.displayName || user.email.split("@")[0],
+        userId: formData.userId,
+        userName: formData.userName,
         price: formData.type === "full" ? 100 : 50,
       });
       alert("✅ Reserva creada correctamente");
@@ -125,7 +148,6 @@ function ReservationModal({ date, existingBookings = [], onClose, onSaved }) {
     }
   };
 
-  // Si no hay opciones disponibles mostrará mensaje
   const anyAvailable = availability.morning || availability.afternoon || availability.full;
 
   return (
@@ -133,23 +155,14 @@ function ReservationModal({ date, existingBookings = [], onClose, onSaved }) {
       <div className="modal">
         <h3>Nueva Reserva</h3>
 
-        {date && (
-          <p>
-            Fecha seleccionada: <strong>{date}</strong>
-          </p>
-        )}
+        {date && <p>Fecha seleccionada: <strong>{date}</strong></p>}
 
         {!anyAvailable ? (
           <p className="no-available">❌ Este día está completamente ocupado. Elige otra fecha.</p>
         ) : (
           <form onSubmit={handleSubmit}>
             <label>Fecha</label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              readOnly
-            />
+            <input type="date" name="date" value={formData.date} readOnly />
 
             <label>Turno</label>
             <select name="type" value={formData.type} onChange={handleChange} required>
@@ -164,21 +177,40 @@ function ReservationModal({ date, existingBookings = [], onClose, onSaved }) {
               </option>
             </select>
 
+            {isAdmin && users.length > 0 && (
+              <>
+                <label>Usuario</label>
+                <select
+                  name="userId"
+                  value={formData.userId}
+                  onChange={(e) => {
+                    const selected = users.find(u => u.id === e.target.value);
+                    if (selected) {
+                      setFormData(prev => ({
+                        ...prev,
+                        userId: selected.id,
+                        userName: `${selected.nombre} ${selected.apellidos}`.trim()
+                      }));
+                    }
+                  }}
+                  required
+                >
+                  <option value="">-- Seleccionar usuario --</option>
+                  {users.map(u => (
+                    <option key={u.id} value={u.id}>
+                      {`${u.nombre} ${u.apellidos}`.trim()} ({u.email})
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+
             <label>Descripción / Notas (opcional)</label>
-            <textarea
-              name="notes"
-              value={formData.notes}
-              onChange={handleChange}
-              placeholder="Ej. cumpleaños, comida, etc."
-            />
+            <textarea name="notes" value={formData.notes} onChange={handleChange} placeholder="Ej. cumpleaños, comida, etc." />
 
             <div className="modal-buttons">
-              <button type="submit" disabled={loading}>
-                {loading ? "Guardando..." : "Guardar"}
-              </button>
-              <button type="button" onClick={onClose} className="btn-secondary">
-                Cancelar
-              </button>
+              <button type="submit" disabled={loading}>{loading ? "Guardando..." : "Guardar"}</button>
+              <button type="button" onClick={onClose} className="btn-secondary">Cancelar</button>
             </div>
           </form>
         )}
@@ -188,5 +220,7 @@ function ReservationModal({ date, existingBookings = [], onClose, onSaved }) {
 }
 
 export default ReservationModal;
+
+
 
 

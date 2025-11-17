@@ -1,7 +1,7 @@
 
 // src/services/userService.js
 import { db } from "../firebaseConfig";
-import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc, getDocs, updateDoc, serverTimestamp } from "firebase/firestore";
 
 /**
  * 🧩 Crear perfil de usuario al registrarse
@@ -21,9 +21,25 @@ export const createUserProfile = async (uid, userData) => {
     throw error;
   }
 };
+/**
+ * Obtener todos los perfiles de usuario desde Firestore
+ */
+export const getAllUsers = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, "users"));
+    const users = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return users;
+  } catch (error) {
+    console.error("❌ Error al obtener usuarios:", error);
+    throw error;
+  }
+}
 
 /**
- * 📄 Obtener perfil de usuario desde Firestore
+ * Obtener perfil de usuario desde Firestore
  */
 export const getUserProfile = async (uid) => {
   try {
@@ -43,6 +59,26 @@ export const getUserProfile = async (uid) => {
 };
 
 /**
+* obtiener usuario por id
+*/
+export const getUserById = async (uid) => {
+  try {
+    const userRef = doc(db, "users", uid);
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() };
+    } else {
+      console.warn("⚠️ No se encontró usuario con UID:", uid);
+      return null;
+    }
+  } catch (error) {
+    console.error("❌ Error en getUserById:", error);
+    throw error;
+  }
+};
+
+/**
  * ✏️ Actualizar perfil del usuario
  */
 export const updateUserProfile = async (uid, data) => {
@@ -55,3 +91,5 @@ export const updateUserProfile = async (uid, data) => {
     throw error;
   }
 };
+
+

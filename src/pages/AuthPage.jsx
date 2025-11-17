@@ -1,6 +1,6 @@
 // src/pages/AuthPage.jsx
 import { useState } from "react";
-import { auth} from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { Utensils } from "lucide-react";
@@ -22,15 +22,6 @@ function AuthPage() {
     }
   };
 
-  // const handleGoogleLogin = async () => {
-  //   try {
-  //     await signInWithPopup(auth, googleProvider);
-  //     navigate("/home");
-  //   } catch (err) {
-  //     alert("Error con Google Sign-In: " + err.message);
-  //   }
-  // };
-
   return (
     <div className="auth-page">
       <div className="auth-box">
@@ -50,7 +41,7 @@ function AuthPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <label>Contraseñ<area shape="default" coords="" href="" alt="" /></label>
+          <label>Contraseña:</label>
           <input
             type="password"
             placeholder="******"
@@ -61,10 +52,6 @@ function AuthPage() {
 
           <button type="submit">Iniciar Sesiòn</button>
         </form>
-
-        {/* <button className="google-btn" onClick={handleGoogleLogin}>
-          Iniciar sesión con Google
-        </button> */}
 
         <p className="register-text">
           ¿No tienes cuenta?
