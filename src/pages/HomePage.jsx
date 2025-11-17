@@ -1,61 +1,72 @@
 // src/pages/HomePage.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
+
 import { getAllBookings, getUserBookings } from "../services/bookingService";
 import { getUserById } from "../services/userService";
+
 import Calendar from "../components/Calendar";
 import ReservationModal from "../components/ReservationModal";
+
 import { Utensils } from "lucide-react";
 import { useAuthUser } from "../hooks/useAuthUser";
+
 import { getInitials } from "../utils/format";
 import { getAvatarColor } from "../utils/colors";
 import "../styles/pages/HomePage.scss";
 
 function HomePage() {
+  const navigate = useNavigate();
+  const { user, profile, loading } = useAuthUser();
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+
   const [bookings, setBookings] = useState([]);
-  const [bookingsByUser, setBookingsByUser] = useState([]);
+  const [userBookings, setUserBookings] = useState([]);
+
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  const navigate = useNavigate();
-  const { user, profile, loading } = useAuthUser();
   const currentYear = new Date().getFullYear();
 
+
+  // 1. Cargar perfil -> determinar si es admin
+useEffect(() => {
+  if (!user) return;
+
+  getUserById(user.uid).then((p) => {
+    console.log("🔥 Perfil recibido:", p);
+    if (!p) return;
+
+    const admin = p.role === "admin";
+    console.log("🔥 ¿ROLE ES ADMIN?:", admin);
+
+    setIsAdmin(admin);
+  });
+}, [user]);
+
+
+  // 2. Cargar reservas
   useEffect(() => {
-      const current = auth.currentUser;
-
-      if (!current) return;
-
-      getUserById(current.uid).then(profile => {
-        if (!profile) return;
-
-        setIsAdmin(profile.role === "admin"); // o como estés guardando el campo role
-      });
-    }, []);
-
-  // eslint-disable-next-line no-unused-vars
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      loadBookings();
-      loadUserBookings();
-      console.log("Usuario en HomePage:", user);
-    }
+    if (!user) return;
+    loadAllBookings();
+    loadUserBookings();
+    console.log("user", user)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  const loadBookings = async () => {
+  const loadAllBookings = async () => {
     try {
       const data = await getAllBookings();
       setBookings(data);
-      console.log("RESERVAS TOTALES:", data);
+      console.log("All bookings:", data);
     } catch (err) {
-      console.error("Error al cargar reservas:", err);
+      console.error("Error al obtener reservas:", err);
     }
   };
 
@@ -63,55 +74,45 @@ function HomePage() {
     try {
       if (!user) return;
       const data = await getUserBookings(user.uid);
-      console.log("Reservas del usuario cargadas:", data);
-      setBookingsByUser(data);
+      setUserBookings(data);
     } catch (err) {
-      console.error("Error al cargar reservas del usuario:", err);
+      console.error("Error al obtener reservas del usuario:", err);
     }
   };
 
-  // Cerrar sesión
+ // ------------------------------
+  // 3. Filtrado unificado según rol 
+  const sourceBookings = useMemo(
+    () => (isAdmin ? bookings : userBookings),
+    [isAdmin, bookings, userBookings]
+  );
+
+  const filteredBookings = useMemo(() => {
+    return sourceBookings
+      .filter((b) => {
+        const d = new Date(b.date);
+        return (
+          d.getMonth() + 1 === selectedMonth &&
+          d.getFullYear() === selectedYear
+        );
+      })
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+  }, [sourceBookings, selectedMonth, selectedYear]);
+
+  // ------------------------------
+  // 4. Logout
   const handleLogout = async () => {
     await signOut(auth);
     navigate("/auth");
   };
 
-  // Ir al perfil
-  const goToProfile = () => navigate("/profile");
-
-  // Clic en día del calendario
+  // 5. Apertura de modal
   const handleDayClick = (date) => {
-    console.log("Día seleccionado:", date);
     setSelectedDate(date);
     setShowModal(true);
   };
 
-  // Filtrar reservas del usuario según mes visible en el calendario
-const filteredBookings =
-  user?.email === "admin@admin.com"
-    ? bookings
-        .filter((b) => {
-          const d = new Date(b.date);
-          return (
-            d.getMonth() + 1 === selectedMonth &&
-            d.getFullYear() === selectedYear
-          );
-        })
-        .sort((a, b) => new Date(a.date) - new Date(b.date))
-    : bookingsByUser
-        .filter((b) => {
-          const d = new Date(b.date);
-          return (
-            d.getMonth() + 1 === selectedMonth &&
-            d.getFullYear() === selectedYear
-          );
-        })
-        .sort((a, b) => new Date(a.date) - new Date(b.date));
-if (loading) return <p className="loading">Cargando...</p>;
-
-
-console.log("Booking dates:", bookingsByUser.map(b => b.date));
-console.log("Mes/Año visibles:", selectedMonth, selectedYear);
+  if (loading) return <p className="loading">Cargando...</p>;
 
   return (
     <div className="home-page">
@@ -127,20 +128,28 @@ console.log("Mes/Año visibles:", selectedMonth, selectedYear);
             <div
               className="user-avatar"
               style={{ backgroundColor: getAvatarColor(user.uid) }}
-              onClick={goToProfile}
+              onClick={() => navigate("/profile")}
             >
               {getInitials(profile.nombre, profile.apellidos)}
             </div>
 
             <div className="user-actions">
-              {user?.email === "admin@admin.com" && (
-                <button onClick={() => navigate("/admin")} className="btn-small admin">
+              {isAdmin && (
+                <button
+                  onClick={() => navigate("/admin")}
+                  className="btn-small admin"
+                >
                   Admin
                 </button>
               )}
-              <button onClick={goToProfile} className="btn-small">
+
+              <button
+                onClick={() => navigate("/profile")}
+                className="btn-small"
+              >
                 Mi Perfil
               </button>
+
               <button onClick={handleLogout} className="btn-small logout">
                 Cerrar Sesión
               </button>
@@ -149,18 +158,20 @@ console.log("Mes/Año visibles:", selectedMonth, selectedYear);
         )}
       </header>
 
+      {/* Calendar header */}
       <section className="calendar-header">
         <h2>Calendario de Reservas</h2>
         <p className="calendar-info">
-          Solo se pueden reservar fechas dentro del año <strong>{currentYear}</strong>.
+          Solo se pueden reservar fechas dentro del año{" "}
+          <strong>{currentYear}</strong>.
         </p>
       </section>
 
-      {/* Calendario */}
       <div className="calendar-container">
+        {/* Calendario */}
         <div className="calendar-section">
           <Calendar
-            bookings={bookings}
+            bookings={isAdmin ? bookings : userBookings}
             onDayClick={handleDayClick}
             onMonthChange={(month, year) => {
               setSelectedMonth(month);
@@ -169,39 +180,40 @@ console.log("Mes/Año visibles:", selectedMonth, selectedYear);
           />
         </div>
 
-        {/* Reservas filtradas por mes */}
+        {/* Lista de reservas */}
         <div className="bookings-section">
           <h3>
             Reservas de{" "}
-            {new Date(selectedYear, selectedMonth - 1).toLocaleString("es-ES", {
-              month: "long",
-              year: "numeric",
-            })}
+            {new Date(selectedYear, selectedMonth - 1).toLocaleString(
+              "es-ES",
+              { month: "long", year: "numeric" }
+            )}
           </h3>
 
           {filteredBookings.length === 0 ? (
             <p className="no-bookings">No hay reservas para este mes.</p>
           ) : (
             <div className="bookings-list">
-              {filteredBookings.map((booking) => (
-                <div key={booking.id} className="booking-row">
-                  <span className={`booking-color ${booking.type}`}></span>
+              {filteredBookings.map((b) => (
+                <div key={b.docId || b.id} className="booking-row">
+                  <span className={`booking-color ${b.type}`}></span>
+
                   <div className="booking-info">
                     <span className="booking-date">
-                      {new Date(booking.date).toLocaleDateString("es-ES", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      })}
+                      {new Date(b.date).toLocaleDateString("es-ES")}
                     </span>
+
                     <span className="booking-type">
-                      {booking.type === "morning"
+                      {b.type === "morning"
                         ? "Mañana"
-                        : booking.type === "afternoon"
+                        : b.type === "afternoon"
                         ? "Tarde"
                         : "Día completo"}
                     </span>
-                    {booking.notes && <span className="booking-notes">— {booking.notes}</span>}
+
+                    {b.notes && (
+                      <span className="booking-notes">— {b.notes}</span>
+                    )}
                   </div>
                 </div>
               ))}
@@ -210,17 +222,21 @@ console.log("Mes/Año visibles:", selectedMonth, selectedYear);
         </div>
       </div>
 
-      {/* Modal de reservas */}
+      {/* Modal */}
       {showModal && (
         <ReservationModal
           date={selectedDate}
-          existingBookings={bookings.filter((b) => b.date === selectedDate)}
+          existingBookings={bookings.filter(
+            (b) =>
+              new Date(b.date).toDateString() ===
+              new Date(selectedDate).toDateString()
+          )}
           onClose={() => setShowModal(false)}
           onSaved={() => {
-            loadBookings();
+            loadAllBookings();
             loadUserBookings();
           }}
-          isAdmin={user?.email === "admin@admin.com"}
+          isAdmin={isAdmin}
         />
       )}
     </div>
@@ -228,6 +244,7 @@ console.log("Mes/Año visibles:", selectedMonth, selectedYear);
 }
 
 export default HomePage;
+
 
 
 
