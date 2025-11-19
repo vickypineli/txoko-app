@@ -3,8 +3,8 @@
 
 .home-page {
   padding: 1.2rem;
-  color: $color-text;
   background-color: $light-color;
+  color: $color-text;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -18,7 +18,7 @@
   margin-bottom: 1rem;
   gap: 1rem;
 
-  // 💻 En pantallas grandes: logo y usuario en fila
+  // En pantallas grandes: logo y usuario en fila
   @include respond(tablet) {
     flex-direction: row;
     justify-content: space-between;

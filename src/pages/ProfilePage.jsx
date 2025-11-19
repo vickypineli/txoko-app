@@ -281,6 +281,8 @@ const getInitials = () => {
       <button className="btn-home" onClick={() => navigate("/home")}>
         Volver al inicio
       </button>
+
+      
     
 
      {/*  Modal Confirmación */}

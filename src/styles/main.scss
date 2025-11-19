@@ -16,7 +16,7 @@
 }
 
 body {
-  background-color: var(--color-background);
+  background-color: $light-color;
   color: var(--color-text);
   font-family: $font-main;
   margin: 0;

@@ -1,5 +1,5 @@
 // src/pages/RegisterPage.jsx
-// src/pages/RegisterPage.jsx
+
 import { useState } from "react";
 import { auth } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";

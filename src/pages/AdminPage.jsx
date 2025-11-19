@@ -1,50 +1,12 @@
 // src/pages/AdminPage.jsx
-import { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
-import {
-  getAllBookings,
-  updateBooking,
-  deleteBooking,
-} from "../services/bookingService";
+import AdminUsers from "../components/AdminUsers";
+import AdminBookings from "../components/AdminBookings";
 import "../styles/pages/AdminPage.scss";
 
 function AdminPage() {
-  const [bookings, setBookings] = useState([]);
-  const [editingId, setEditingId] = useState(null);
-  const [editedBooking, setEditedBooking] = useState({});
-
   const navigate = useNavigate();
-
-  useEffect(() => {
-    loadBookings();
-  }, []);
-
-  const loadBookings = async () => {
-    const data = await getAllBookings();
-    setBookings(data.sort((a, b) => new Date(a.date) - new Date(b.date)));
-  };
-
-  const handleEdit = (b) => {
-    setEditingId(b.id);
-    setEditedBooking(b);
-  };
-
-  const handleSave = async () => {
-    await updateBooking(editingId, editedBooking);
-    setEditingId(null);
-    loadBookings();
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm("¿Eliminar reserva?")) {
-      await deleteBooking(id);
-      loadBookings();
-    }
-  };
-
-  const handleChange = (e) => {
-    setEditedBooking({ ...editedBooking, [e.target.name]: e.target.value });
-  };
 
   return (
     <div className="admin-page">
@@ -52,63 +14,8 @@ function AdminPage() {
         <h1>Panel de Administración</h1>
         <button onClick={() => navigate("/home")}>⬅ Volver</button>
       </header>
-
-      <div className="admin-bookings">
-        {bookings.map((b) => (
-          <div key={b.id} className="admin-booking">
-            {editingId === b.id ? (
-              <>
-                <input
-                  type="date"
-                  name="date"
-                  value={editedBooking.date}
-                  onChange={handleChange}
-                />
-                <select
-                  name="type"
-                  value={editedBooking.type}
-                  onChange={handleChange}
-                >
-                  <option value="morning">Mañana</option>
-                  <option value="afternoon">Tarde</option>
-                  <option value="full">Día completo</option>
-                </select>
-
-                <input
-                  type="text"
-                  name="userName"
-                  value={editedBooking.userName}
-                  onChange={handleChange}
-                />
-
-                <button onClick={handleSave}>Guardar</button>
-                <button onClick={() => setEditingId(null)}>Cancelar</button>
-              </>
-            ) : (
-              <>
-                <div className="booking-info">
-                  <span>{new Date(b.date).toLocaleDateString("es-ES")}</span>
-                  <span>
-                    {b.type === "morning"
-                      ? "Mañana"
-                      : b.type === "afternoon"
-                      ? "Tarde"
-                      : "Día completo"}
-                  </span>
-                  <span>{b.userName}</span>
-                </div>
-
-                <div className="actions">
-                  <button onClick={() => handleEdit(b)}>Editar</button>
-                  <button className="delete" onClick={() => handleDelete(b.id)}>
-                    Eliminar
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        ))}
-      </div>
+      <AdminBookings />
+      <AdminUsers />
     </div>
   );
 }

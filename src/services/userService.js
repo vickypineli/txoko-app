@@ -1,10 +1,10 @@
 
 // src/services/userService.js
 import { db } from "../firebaseConfig";
-import { collection, doc, setDoc, getDoc, getDocs, updateDoc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc,serverTimestamp } from "firebase/firestore";
 
 /**
- * 🧩 Crear perfil de usuario al registrarse
+ * Crear perfil de usuario al registrarse
  * Guarda los datos del usuario en la colección "users" con su UID como ID.
  */
 export const createUserProfile = async (uid, userData) => {
@@ -79,7 +79,7 @@ export const getUserById = async (uid) => {
 };
 
 /**
- * ✏️ Actualizar perfil del usuario
+ * Actualizar perfil del usuario
  */
 export const updateUserProfile = async (uid, data) => {
   try {
@@ -88,6 +88,19 @@ export const updateUserProfile = async (uid, data) => {
     console.log("✅ Perfil actualizado correctamente");
   } catch (error) {
     console.error("❌ Error al actualizar perfil:", error);
+    throw error;
+  }
+};
+
+/** 
+** Eliminar perfil de usuario
+*/
+export const deleteUserProfile = async (uid) => {
+  try {
+    await deleteDoc(doc(db, "users", uid));
+    console.log("🗑 Perfil eliminado:", uid);
+  } catch (error) {
+    console.error("❌ Error al eliminar usuario:", error);
     throw error;
   }
 };
