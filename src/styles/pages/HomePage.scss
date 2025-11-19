@@ -11,7 +11,7 @@
   align-items: center;
 
  .home-header {
-  width: 100%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,7 +26,7 @@
   }
 
   .logo-box {
-    display: none; // 🚫 Oculto en móvil
+    display: none; //Oculto en móvil
 
     @include respond(tablet) {
       display: flex;
@@ -116,18 +116,22 @@
     margin-bottom: 1.5rem;
     text-align:center;
     color: $primary-color;
+    align-items: center;
     .calendar-info{
-      font-size:0.95rem;
-      color: $color-text-secondary;
-      margin-top: 1rem;
+      color: $color-text;
+      margin-top: 0.5rem;
     }
   }
   .calendar-container{
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: space-evenly;
+
+    // padding-top: 2rem;
+    padding: 1rem 2rem;
+    gap: 2rem;
 
   }
   @include respond(tablet) {
@@ -141,14 +145,14 @@
     background: #fff;
     border-radius: $radius-lg;
     box-shadow: $shadow-md;
-    padding: 0 1rem 2rem 1rem;
+    padding: 2ch 1rem 2rem 1rem;
     margin-bottom: 1rem;
     text-align: center;
 
-    h2 {
-      color: $primary-color;
-      margin-bottom: 1rem;
-    }
+    // h3 {
+    //   color: $primary-color;
+    //   margin-bottom: 1rem;
+    // }
   }
 
   .actions {
@@ -180,15 +184,6 @@
       }
     }
   }
-    // 🎯 Título de la sección
-  h3 {
-    margin-top: 2rem;
-    margin-bottom: 0.8rem;
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: $secondary-color;
-    text-align: center;
-  }
 
   .no-bookings {
     text-align: center;
@@ -197,6 +192,15 @@
     margin-bottom: 2rem;
   }
 
+  .bookings-section {
+    width: 100%;
+    min-height: 53vh;
+    background: $background-light;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-md;
+    padding: 1rem;
+    margin-bottom: 2rem;
+  } 
   .bookings-list {
     width: 100%;
     max-width: 400px;
