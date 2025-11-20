@@ -71,10 +71,10 @@ return (
         onChange={(e) => setSearch(e.target.value)}
         className="admin-search"
       />
-
+      
       <div className="admin-bookings">
         {bookingsFiltered.map((b) => (
-          <div key={b.id} className="admin-booking">
+          <div key={b.id} className="admin-card">
             {editingId === b.id ? (
               <>
                 <input

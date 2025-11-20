@@ -10,14 +10,20 @@ function AdminPage() {
 
   return (
     <div className="admin-page">
-      <header>
-        <h1>Panel de Administración</h1>
-        <button onClick={() => navigate("/home")}>⬅ Volver</button>
-      </header>
+        <header>         
+          <h1>Panel de Administración</h1>         
+          <div className="header-actions">
+            <button className="btn-back" onClick={() => navigate("/home")}>
+              Volver
+            </button>
+         </div>
+       </header>
+    <div className="admin-container">
       <AdminBookings />
       <AdminUsers />
+      </div>
     </div>
-  );
+  )
 }
 
 export default AdminPage;

@@ -60,8 +60,8 @@ function AdminUsers() {
   );
 
   return (
-    <div className="admin-users">
-      <h2>Gestión de Usuarios</h2>
+    <div className="admin-users-wrapper">
+      <h2>Usuarios</h2>
 
      {/* 🔎 BUSCADOR */}
       <input
@@ -71,11 +71,12 @@ function AdminUsers() {
         onChange={(e) => setSearch(e.target.value)}
         className="admin-search"
       />
-      
+    <div className="admin-bookings">
       {usersFiltered.map((user) => (
         <div className="user-card" key={user.id}>
           {editingUserId === user.id ? (
-            <>
+             <div className="user-box">
+              <div className="user-info">
               <input type="text" name="nombre" value={editedUserData.nombre} onChange={handleInputChange} />
               <input type="text" name="apellidos" value={editedUserData.apellidos} onChange={handleInputChange} />
               <input type="text" name="direccion" value={editedUserData.direccion} onChange={handleInputChange} />
@@ -83,26 +84,41 @@ function AdminUsers() {
               <input type="text" name="piso" value={editedUserData.piso} onChange={handleInputChange} />
               <input type="text" name="telefono" value={editedUserData.telefono} onChange={handleInputChange} />
               <input type="text" name="email" value={editedUserData.email} onChange={handleInputChange} />
-
-              <button onClick={handleSaveClick}>Guardar</button>
-              <button onClick={() => setEditingUserId(null)}>Cancelar</button>
-            </>
+            </div>
+              <div className="actions">
+                <button className="save" onClick={handleSaveClick}>Guardar</button>
+                <button className="cancel" onClick={() => setEditingUserId(null)}>Cancelar</button>
+              </div>
+            </div>
           ) : (
-            <>
-              <p><strong>Nombre:</strong> {user.nombre}</p>
-              <p><strong>Apellidos:</strong> {user.apellidos}</p>
-              <p><strong>Dirección:</strong> {user.direccion}</p>
-              <p><strong>Portal:</strong> {user.portal}</p>
-              <p><strong>Piso:</strong> {user.piso}</p>
-              <p><strong>Teléfono:</strong> {user.telefono}</p>
-              <p><strong>Email:</strong> {user.email}</p>
-
-              <button onClick={() => handleEditClick(user)}>Editar</button>
-              <button onClick={() => handleDeleteClick(user.id)}>Eliminar</button>
-            </>
+            <div className="user-box">
+              <div className="user-info">
+                <div className="user-name">
+                  <span><strong>Nombre:</strong> {user.nombre}</span>
+                  <span>{user.apellidos}</span>
+                </div>
+                <div className="user-direction">
+                  <span><strong>Dirección:</strong> {user.direccion}</span>
+                  <span><strong>nº:</strong> {user.portal}</span>
+                  <span><strong>Piso:</strong> {user.piso}</span>
+                </div>
+                <div className="user-contact">
+                  <span><strong>Teléfono:</strong> {user.telefono}</span>
+                  <span><strong>Email:</strong> {user.email}</span>
+                </div>
+              </div>
+              <div className="actions">
+                  <button className="edit" onClick={() => handleEditClick(user)}>Editar</button>
+                  <button className="delete" onClick={() => handleDeleteClick(user.id)}>
+                    Eliminar
+                  </button>
+              </div>
+              
+            </div>
           )}
         </div>
       ))}
+    </div>
     </div>
   );
 }
