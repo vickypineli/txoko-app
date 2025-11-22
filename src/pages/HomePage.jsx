@@ -1,4 +1,47 @@
 // src/pages/HomePage.jsx
+
+// import { useEffect, useState } from "react";
+// import Calendar from "../components/Calendar";
+// import ReservationModal from "../components/ReservationModal";
+// import { getAllBookings } from "../services/bookingService";
+// import { auth } from "../firebaseConfig";
+
+// function HomePage() {
+//   const [bookings, setBookings] = useState([]);
+//   const [selectedDate, setSelectedDate] = useState(null);
+
+//   const loadBookings = async () => {
+//     const all = await getAllBookings();
+//     setBookings(all);
+//   };
+
+//   useEffect(() => {
+//     loadBookings();
+//   }, []);
+
+//   return (
+//     <div className="home-page">
+//       <h2>Calendario de reservas</h2>
+
+//       <Calendar
+//         bookings={bookings}                   // 🔥 SIEMPRE todas
+//         userId={auth.currentUser?.uid}        // 🔥 Necesario para borde azul
+//         onDayClick={(date) => setSelectedDate(date)}
+//         onMonthChange={() => loadBookings()}   // refresca al cambiar mes
+//       />
+
+//       {selectedDate && (
+//         <ReservationModal
+//           date={selectedDate}
+//           onClose={() => setSelectedDate(null)}
+//           reload={loadBookings}
+//         />
+//       )}
+//     </div>
+//   );
+// }
+// export default HomePage;
+
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
@@ -75,6 +118,7 @@ useEffect(() => {
       if (!user) return;
       const data = await getUserBookings(user.uid);
       setUserBookings(data);
+      console.log("User bookings:", data);
     } catch (err) {
       console.error("Error al obtener reservas del usuario:", err);
     }
@@ -171,7 +215,7 @@ useEffect(() => {
         {/* Calendario */}
         <div className="calendar-section">
           <Calendar
-            bookings={isAdmin ? bookings : userBookings}
+            bookings={bookings}
             onDayClick={handleDayClick}
             onMonthChange={(month, year) => {
               setSelectedMonth(month);

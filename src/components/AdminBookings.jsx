@@ -5,6 +5,7 @@ import {
   updateBooking,
   deleteBooking,
 } from "../services/bookingService";
+import { getAllUsers } from "../services/userService";
 import "../styles/components/AdminBookings.scss";
 
 function AdminBookings() {
@@ -12,6 +13,8 @@ function AdminBookings() {
   const [editingId, setEditingId] = useState(null);
   const [editedBooking, setEditedBooking] = useState({});
   const [search, setSearch] = useState("");
+  const [users, setUsers] = useState([]);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     loadBookings();
@@ -19,20 +22,49 @@ function AdminBookings() {
 
   const loadBookings = async () => {
     const data = await getAllBookings();
+    console.log("📥 BOOKINGS RECIBIDOS:", data);
     setBookings(data.sort((a, b) => new Date(a.date) - new Date(b.date)));
   };
 
   const handleEdit = (booking) => {
+    console.log("✏️ ENTRANDO A EDITAR RESERVA:", booking);
+    console.log("➡️ userId EN booking:", booking.userId);
+    console.log("➡️ userName EN booking:", booking.userName)
     setEditingId(booking.id);
     setEditedBooking(booking);
+    setUsers([]); // Reset users state
+    // Cargar todos los usuarios para el select
+    getAllUsers().then((all) => {
+      console.log("📥 USERS RECIBIDOS:", all);
+      const filtered = all.filter((u) => u.email !== "");
+      setUsers(filtered);
+      console.log("📥 USERS FILTRADOS:", filtered);
+    }); 
+  };
+    const validateBooking = (data) => {
+    if (!data.date) return "La fecha es obligatoria";
+    if (!data.type) return "El tipo de reserva es obligatorio";
+    if (!data.userId) return "Debes seleccionar un usuario";
+    if (!data.userName) return "El nombre del usuario no puede quedar vacío";
+    return null;
   };
 
   const handleSave = async () => {
+    const validation = validateBooking(editedBooking);
+
+    if (validation) {
+      setErrorMsg(validation);
+      return;
+    }
+
     try {
+      setErrorMsg("");
+
       await updateBooking(editingId, editedBooking);
       setEditingId(null);
       loadBookings();
     } catch (err) {
+      setErrorMsg("Ocurrió un error al guardar la reserva");
       console.error("❌ Error guardando reserva:", err);
     }
   };
@@ -77,6 +109,13 @@ return (
           <div key={b.id} className="admin-card">
             {editingId === b.id ? (
               <>
+                {/*  MENSAJE DE ERROR */}
+                {errorMsg && (
+                  <div className="admin-error">
+                    {errorMsg}
+                  </div>
+                )}
+              
                 <input
                   type="date"
                   name="date"
@@ -95,11 +134,44 @@ return (
 
                 <input
                   type="text"
-                  name="userName"
-                  value={editedBooking.userName}
+                  name="notes"
+                  value={editedBooking.notes || ""}
                   onChange={handleChange}
                 />
 
+                {/* 
+                <input
+                  type="text"
+                  name="userName"
+                  value={editedBooking.userName}
+                  onChange={handleChange}
+                  disabled={true}
+                /> */}
+                <select
+                  name="userId"
+                  value={editedBooking.userId}
+                  onChange={(e) => {
+                    const selectedId = e.target.value;
+
+                    const selectedUser = users.find(
+                      (u) => u.id === selectedId
+                    );
+
+                    setEditedBooking((prev) => ({
+                      ...prev,
+                      userId: selectedId, // 🔥 string válido, no Number()
+                      userName: selectedUser
+                        ? `${selectedUser.nombre} ${selectedUser.apellidos}`.trim()
+                        : prev.userName, // 🔥 nada de undefined
+                    }));
+                  }}
+                >
+                  {users.map(u => (
+                    <option key={u.id} value={u.id}>
+                      {`${u.nombre} ${u.apellidos}`.trim()} ({u.email})
+                    </option>
+                  ))}
+                </select>
                 <button onClick={handleSave}>Guardar</button>
                 <button onClick={() => setEditingId(null)}>Cancelar</button>
               </>
