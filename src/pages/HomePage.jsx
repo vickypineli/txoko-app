@@ -40,14 +40,9 @@ function HomePage() {
   // 1. Cargar perfil -> determinar si es admin
 useEffect(() => {
   if (!user) return;
-
   getUserById(user.uid).then((p) => {
-    console.log("🔥 Perfil recibido:", p);
     if (!p) return;
-
     const admin = p.role === "admin";
-    console.log("🔥 ¿ROLE ES ADMIN?:", admin);
-
     setIsAdmin(admin);
   });
 }, [user]);
@@ -58,7 +53,6 @@ useEffect(() => {
     if (!user) return;
     loadAllBookings();
     loadUserBookings();
-    console.log("user", user)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -193,36 +187,6 @@ useEffect(() => {
             )}
           </h3>
           <BookingsList bookings={filteredBookings} />
-
-          {/* {filteredBookings.length === 0 ? (
-            <p className="no-bookings">No hay reservas para este mes.</p>
-          ) : (
-            <div className="bookings-list">
-              {filteredBookings.map((b) => (
-                <div key={b.docId || b.id} className="booking-row">
-                  <span className={`booking-color ${b.type}`}></span>
-
-                  <div className="booking-info">
-                    <span className="booking-date">
-                      {new Date(b.date).toLocaleDateString("es-ES")}
-                    </span>
-
-                    <span className="booking-type">
-                      {b.type === "morning"
-                        ? "Mañana"
-                        : b.type === "afternoon"
-                        ? "Tarde"
-                        : "Día completo"}
-                    </span>
-
-                    {b.notes && (
-                      <span className="booking-notes">— {b.notes}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )} */}
         </div>
       </div>
 

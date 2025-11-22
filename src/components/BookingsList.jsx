@@ -1,10 +1,16 @@
 //src/components/BookingsList.jsx
 
+import { useEffect } from "react";
 
 function BookingsList({ bookings }) {
+
+    useEffect(() => {
+  console.log("BookingsList renderizado");
+});
   if (!bookings || bookings.length === 0) {
     return <p className="no-bookings">No hay reservas para este mes.</p>;
   }
+
 
   return (
     <div className="bookings-list">
