@@ -2,7 +2,10 @@
 import { useEffect, useState } from "react";
 // import { getAllUsers, updateUserProfile, deleteUserProfile } from "../services/userService";
 import { getAllUsers, updateUser, deleteUser } from "../services/userService";
+import Loading from "./Loading";
 import "../styles/components/AdminUsers.scss";
+
+
 
 function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -55,7 +58,7 @@ function AdminUsers() {
     setEditedUserData((prev) => ({ ...prev, [name]: value }));
   };
 
-  if (loading) return <div>Cargando usuarios...</div>;
+  if (loading) return <Loading text="Cargando usuarios..." />;
 
   //filtrado de usuarios por nombre
   const usersFiltered = users.filter((u) =>

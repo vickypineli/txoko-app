@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { createBooking } from "../services/bookingService";
 import { getAllUsers } from "../services/userService";
 import { useAuth } from "../context/AuthContext";
+import Loading from "./Loading"; 
 import "../styles/components/ReservationModal.scss";
 
 function ReservationModal({ date, existingBookings = [], onClose, onSaved, isAdmin = false }) {

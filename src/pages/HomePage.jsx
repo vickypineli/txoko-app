@@ -15,7 +15,9 @@ import BookingsList from "../components/BookingsList";
 import { Utensils } from "lucide-react";
 import { getInitials } from "../utils/format";
 import { getAvatarColor } from "../utils/colors";
+import Loading from "../components/Loading";
 import "../styles/pages/HomePage.scss";
+
 
 function HomePage() {
   const navigate = useNavigate();
@@ -80,7 +82,7 @@ function HomePage() {
       .sort((a, b) => new Date(a.date) - new Date(b.date));
   }, [sourceBookings, selectedMonth, selectedYear]);
 
-  // ------------------------------
+
   // 3. Logout
   const handleLogout = async () => {
     await signOut(auth);
@@ -94,7 +96,7 @@ function HomePage() {
   };
 
   // Loading global — ya no hay flickers ni race conditions
-  if (loading) return <p className="loading">Cargando...</p>;
+  if (loading) return <Loading text="Cargando..." />;
 
   return (
     <div className="home-page">

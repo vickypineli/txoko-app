@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getUserBookings, deleteBooking } from "../services/bookingService";
+import Loading from "../components/Loading";
 import "../styles/pages/ProfilePage.scss";
 
 function ProfilePage() {
@@ -86,7 +87,7 @@ function ProfilePage() {
   return String(str);
 };
 
-  if (loading) return <p>Cargando...</p>;
+  if (loading) return <Loading text="Cargando..." />;
 
   const todayStr = new Date().toISOString().split("T")[0];
 
