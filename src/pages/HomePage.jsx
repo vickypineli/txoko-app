@@ -6,24 +6,20 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 
 import { getAllBookings, getUserBookings } from "../services/bookingService";
-import { getUserById } from "../services/userService";
+import { useAuth } from "../context/AuthContext";
 
 import Calendar from "../components/Calendar";
 import ReservationModal from "../components/ReservationModal";
 import BookingsList from "../components/BookingsList";
 
 import { Utensils } from "lucide-react";
-import { useAuthUser } from "../hooks/useAuthUser";
-
 import { getInitials } from "../utils/format";
 import { getAvatarColor } from "../utils/colors";
 import "../styles/pages/HomePage.scss";
 
 function HomePage() {
   const navigate = useNavigate();
-  const { user, profile, loading } = useAuthUser();
-
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user, profile, isAdmin, loading } = useAuth();
 
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -37,24 +33,13 @@ function HomePage() {
   const currentYear = new Date().getFullYear();
 
 
-  // 1. Cargar perfil -> determinar si es admin
-useEffect(() => {
-  if (!user) return;
-  getUserById(user.uid).then((p) => {
-    if (!p) return;
-    const admin = p.role === "admin";
-    setIsAdmin(admin);
-  });
-}, [user]);
-
-
-  // 2. Cargar reservas
+  // 1. Cargar reservas globales + reservas del usuario SOLO cuando user y profile están listos
   useEffect(() => {
-    if (!user) return;
+    if (!user || loading) return;
     loadAllBookings();
     loadUserBookings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, loading]);
 
   const loadAllBookings = async () => {
     try {
@@ -77,8 +62,7 @@ useEffect(() => {
     }
   };
 
- // ------------------------------
-  // 3. Filtrado unificado según rol 
+  // 2. Filtrado unificado según rol 
   const sourceBookings = useMemo(
     () => (isAdmin ? bookings : userBookings),
     [isAdmin, bookings, userBookings]
@@ -97,18 +81,19 @@ useEffect(() => {
   }, [sourceBookings, selectedMonth, selectedYear]);
 
   // ------------------------------
-  // 4. Logout
+  // 3. Logout
   const handleLogout = async () => {
     await signOut(auth);
     navigate("/auth");
   };
 
-  // 5. Apertura de modal
+  // 4. Apertura de modal
   const handleDayClick = (date) => {
     setSelectedDate(date);
     setShowModal(true);
   };
 
+  // Loading global — ya no hay flickers ni race conditions
   if (loading) return <p className="loading">Cargando...</p>;
 
   return (

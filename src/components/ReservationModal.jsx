@@ -1,7 +1,7 @@
 // src/components/ReservationModal.jsx
 import { useState, useEffect } from "react";
 import { createBooking } from "../services/bookingService";
-import { getAllUsers, getUserById } from "../services/userService";
+import { getAllUsers, getUser } from "../services/userService";
 import { auth } from "../firebaseConfig";
 import "../styles/components/ReservationModal.scss";
 
@@ -20,16 +20,14 @@ function ReservationModal({ date, existingBookings = [], onClose, onSaved, isAdm
     full: true,
   });
   const [users, setUsers] = useState([]);
-
-
-
-      // Cargar datos del usuario logueado si NO es admin
-    const user = auth.currentUser;
+  // Cargar datos del usuario logueado si NO es admin
+  const user = auth.currentUser;
 
     useEffect(() => {
       if (!isAdmin && user) {
         // El usuario normal NO elige usuario → lo rellenamos automáticamente
-        getUserById(user.uid).then(profile => {
+        // getUserById(user.uid).then(profile => {
+        getUser(user.uid).then(profile => {
           if (profile) {
             setFormData(prev => ({
               ...prev,
@@ -41,7 +39,16 @@ function ReservationModal({ date, existingBookings = [], onClose, onSaved, isAdm
       }
     }, [isAdmin, user]);
 
-
+  // Si NO es admin, autocompletar usuario
+  useEffect(() => {
+    if (!isAdmin && user) {
+      setFormData(prev => ({
+        ...prev,
+        userId: user.uid,
+        userName: user.displayName || user.email || "Usuario"
+      }));
+    }
+  }, [isAdmin, user]);
 
   // Sincronizar la fecha entrante
   useEffect(() => {
@@ -57,16 +64,8 @@ function ReservationModal({ date, existingBookings = [], onClose, onSaved, isAdm
       }).catch(err => console.error("Error cargando usuarios:", err));
     }
   }, [isAdmin]);
-// Si NO es admin, autocompletar usuario
-useEffect(() => {
-  if (!isAdmin && user) {
-    setFormData(prev => ({
-      ...prev,
-      userId: user.uid,
-      userName: user.displayName || user.email || "Usuario"
-    }));
-  }
-}, [isAdmin, user]);
+
+
 
   // Calcular disponibilidad
   useEffect(() => {

@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { auth } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { createUserProfile } from "../services/userService";
+// import { createUserProfile } from "../services/userService";
+import { createUser } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 import "../styles/pages/RegisterPage.scss";
 
@@ -38,8 +39,8 @@ function RegisterPage() {
       
       // eslint-disable-next-line no-unused-vars
       const { password, ...profileData } = formData;
-      await createUserProfile(userCredential.user.uid, profileData);
-
+      // await createUserProfile(userCredential.user.uid, profileData);
+      await createUser(userCredential.user.uid, profileData);
       alert("✅ Registro exitoso. Ahora puedes iniciar sesión.");
       navigate("/auth");
     } catch (err) {

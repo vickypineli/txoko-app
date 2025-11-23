@@ -1,6 +1,7 @@
 // src/components/AdminUsers.jsx
 import { useEffect, useState } from "react";
-import { getAllUsers, updateUserProfile, deleteUserProfile } from "../services/userService";
+// import { getAllUsers, updateUserProfile, deleteUserProfile } from "../services/userService";
+import { getAllUsers, updateUser, deleteUser } from "../services/userService";
 import "../styles/components/AdminUsers.scss";
 
 function AdminUsers() {
@@ -28,7 +29,8 @@ function AdminUsers() {
 
   const handleSaveClick = async () => {
     try {
-      await updateUserProfile(editingUserId, editedUserData);
+      //await updateUserProfile(editingUserId, editedUserData);
+      await updateUser(editingUserId, editedUserData);
       setEditingUserId(null);
       loadUsers();
     } catch (error) {
@@ -40,7 +42,8 @@ function AdminUsers() {
     if (!window.confirm("¿Estás seguro de eliminar este usuario?")) return;
 
     try {
-      await deleteUserProfile(userId);
+      //await deleteUserProfile(userId);
+      await deleteUser(userId);
       loadUsers();
     } catch (error) {
       console.error("❌ Error al eliminar usuario:", error);
