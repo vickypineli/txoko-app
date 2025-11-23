@@ -36,6 +36,9 @@
         width: 120px;
         height: 120px;
         display: block;
+        animation: spin 2.75s linear infinite;
+        // animation: spinSmooth 2.5s cubic-bezier(0.52, 0.01, 0.16, 1) infinite;
+        display: inline-block;
       }
     }
 
@@ -72,6 +75,15 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+// @keyframes spin {
+//   from {
+//     transform: rotate(0deg);
+//   }
+//   to {
+//     transform: rotate(180deg);
+//   }
+// }
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
