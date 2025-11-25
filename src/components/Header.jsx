@@ -5,8 +5,6 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 
 import { Utensils } from "lucide-react";
-import { getInitials } from "../utils/format";
-import { getAvatarColor } from "../utils/colors";
 import { useAuth } from "../context/AuthContext";
 import "../styles/components/Header.scss";
 
@@ -19,7 +17,7 @@ function Header() {
     await signOut(auth);
     navigate("/login");
   };
-
+  
   return (
       <header className="header">
         <div className="logo-box">
@@ -29,13 +27,9 @@ function Header() {
 
         {user && profile && (
           <div className="user-header">
-            <div
-              className="user-avatar"
-              style={{ backgroundColor: getAvatarColor(user.uid) }}
-              onClick={() => navigate("/profile")}
-            >
-              {getInitials(profile.nombre, profile.apellidos)}
-            </div>
+            <p className="user-name" onClick={() => navigate("/profile")}>
+              Hola, {profile.nombre} {profile.apellidos}
+            </p>
 
             <div className="user-actions">
                <button 
