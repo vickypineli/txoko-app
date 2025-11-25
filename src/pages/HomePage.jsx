@@ -1,9 +1,9 @@
 // src/pages/HomePage.jsx
 
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+// import { useNavigate } from "react-router-dom";
+// import { signOut } from "firebase/auth";
+// import { auth } from "../firebaseConfig";
 
 import { getAllBookings, getUserBookings } from "../services/bookingService";
 import { useAuth } from "../context/AuthContext";
@@ -11,17 +11,19 @@ import { useAuth } from "../context/AuthContext";
 import Calendar from "../components/Calendar";
 import ReservationModal from "../components/ReservationModal";
 import BookingsList from "../components/BookingsList";
+import Header from "../components/Header";
 
-import { Utensils } from "lucide-react";
-import { getInitials } from "../utils/format";
-import { getAvatarColor } from "../utils/colors";
+import { Heading, Utensils } from "lucide-react";
+// import { getInitials } from "../utils/format";
+// import { getAvatarColor } from "../utils/colors";
 import Loading from "../components/Loading";
 import "../styles/pages/HomePage.scss";
 
 
 function HomePage() {
-  const navigate = useNavigate();
-  const { user, profile, isAdmin, loading } = useAuth();
+  // const navigate = useNavigate();
+  // const { user, profile, isAdmin, loading } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
 
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -84,10 +86,10 @@ function HomePage() {
 
 
   // 3. Logout
-  const handleLogout = async () => {
-    await signOut(auth);
-    navigate("/auth");
-  };
+  // const handleLogout = async () => {
+  //   await signOut(auth);
+  //   navigate("/auth");
+  // };
 
   // 4. Apertura de modal
   const handleDayClick = (date) => {
@@ -100,8 +102,9 @@ function HomePage() {
 
   return (
     <div className="home-page">
+      <Header/>
       {/* Header */}
-      <header className="home-header">
+      {/* <header className="home-header">
         <div className="logo-box">
           <Utensils className="logo-svg" size={60} aria-hidden="true" />
           <h1 className="home-title">Txoko-App</h1>
@@ -140,7 +143,7 @@ function HomePage() {
             </div>
           </div>
         )}
-      </header>
+      </header> */}
 
       {/* Calendar header */}
       <section className="calendar-header">

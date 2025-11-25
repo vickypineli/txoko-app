@@ -1,23 +1,22 @@
 // src/pages/AdminPage.jsx
 
-import { useNavigate } from "react-router-dom";
 import AdminUsers from "../components/AdminUsers";
 import AdminBookings from "../components/AdminBookings";
+import Header from "../components/Header";
+
 import "../styles/pages/AdminPage.scss";
 
 function AdminPage() {
-  const navigate = useNavigate();
 
   return (
     <div className="admin-page">
-        <header>         
-          <h1>Panel de Administración</h1>         
-          <div className="header-actions">
-            <button className="btn-back" onClick={() => navigate("/home")}>
-              Volver
-            </button>
-         </div>
-       </header>
+      <header>         
+        <Header/>
+      </header>
+      <div className="admin-title">
+        <h1>Panel de Administración</h1>
+      </div>
+      
     <div className="admin-container">
       <AdminBookings />
       <AdminUsers />

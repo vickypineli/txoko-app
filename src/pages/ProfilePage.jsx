@@ -6,6 +6,8 @@ import { auth, db } from "../firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getUserBookings, deleteBooking } from "../services/bookingService";
 import Loading from "../components/Loading";
+import Header from "../components/Header";
+
 import "../styles/pages/ProfilePage.scss";
 
 function ProfilePage() {
@@ -170,6 +172,7 @@ const getInitials = () => {
 
   return (
     <div className="profile-page">
+      <Header/>
       <h2>Mi Perfil</h2>
 
       <div className="profile-card">
@@ -278,13 +281,7 @@ const getInitials = () => {
           </tbody>
         </table>
       )}
-
-      <button className="btn-home" onClick={() => navigate("/home")}>
-        Volver al inicio
-      </button>
-
-      
-    
+  
 
      {/*  Modal Confirmación */}
 
