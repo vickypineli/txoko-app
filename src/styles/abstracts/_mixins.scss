@@ -60,8 +60,8 @@
 
 
 // Transición suave
-@mixin transition($time: 0.3s) {
-  transition: all $time ease-in-out;
+@mixin transition($time: 0.3s, $prop: all) {
+  transition: $prop $time ease-in-out;
 }
 
 @mixin theme-colors($bg, $text: #fff) {

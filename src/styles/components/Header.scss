@@ -1,113 +1,142 @@
 @use '../abstracts/mixins' as *;
 @use '../abstracts/variables' as *;
 
+// Header principal
 .header {
-      width: 90%;
+display: flex;
+flex-direction: column;
+align-items: center;
+width: 100%;
+padding: 0.5rem 1rem;
+gap: 1rem;
+
+// Tablet y desktop
+@include respond(tablet) {
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+}
+
+// Logo
+.logo-box {
+display: none; // Oculto en mobile
+align-items: center;
+gap: 0.8rem;
+
+
+@include respond(tablet) {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 1rem;
+}
+
+.logo-svg {
+  width: 40px;
+  height: 40px;
+  color: $primary-color;
+}
+
+.home-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $primary-color;
+}
+
+
+}
+
+// User info y acciones
+.user-header {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0.8rem;
+width: 100%;
+
+
+@include respond(tablet) {
+  flex-direction: row;
+  justify-content: flex-end;
   gap: 1rem;
+  width: auto;
+}
 
-    // En pantallas grandes: logo y usuario en fila
-  @include respond(tablet) {
-    flex-direction: row;
-    justify-content: space-between;
+.user-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $primary-color;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  color: $color-text-white;
+  background-color: $secondary-color;
+  cursor: pointer;
+  box-shadow: $shadow-sm;
+  @include transition(0.2s);
+
+  &:hover, &:focus {
+    transform: scale(1.05);
+    outline: none;
+  }
+}
+
+// Botones interactivos
+.user-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 0.8rem;
+
+  .btn-small {
+    display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-bottom: 2px solid transparent; // Línea base
+
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    background-color: transparent;
+    @include transition(0.2s, all);
+
+    // Colores por tipo
+    &.logout { 
+      color: $danger-color; 
+      &:hover, &:focus { 
+        border-radius: $radius-sm;
+        border:1px solid $danger-color; // Borde inferior rojo al pasar el ratón
+      } 
+      &:active { 
+        background-color: $danger-color; // Fondo rojo al click 
+        color: $color-text-white; // Texto visible sobre fondo 
+        border-bottom-color: $danger-color; 
+        } 
+  } 
+      
+    &.admin { color: $secondary-color; } 
+    &.back { color: $primary-color; } 
+    &.profile { color: $primary-color; } 
+    &:hover:not(.logout), &:focus:not(.logout) { 
+      border: 1px solid currentColor; 
+      border-radius: $radius-sm;
+    } 
+    &:active:not(.logout) { 
+        background-color: $primary-color; 
+        color: $color-text-white; 
+        // border: 1px solid $primary-color; 
+        border-radius: $radius-sm;
+      }
   }
+}
 
-  .logo-box {
-    display: none; //Oculto en móvil
 
-    @include respond(tablet) {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-
-    .logo-svg {
-      color: $primary-color;
-      width: 40px;
-      height: 40px;
-    }
-
-    .home-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: $primary-color;
-    }
-  }
-    .user-header {
-        width:80%;
-        justify-content: space-between;
-        display: flex;
-        flex-direction: column; 
-        align-items: center;
-        gap: 0.8rem;
-    
-        @include respond(tablet) {
-        width: auto; 
-        justify-content: space-around;
-        align-items: center;
-        gap: 0.6rem;
-        }
-        .user-name {
-            color: $primary-color;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        .user-avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        color: $color-text-white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        box-shadow: $shadow-sm;
-        transition: transform 0.2s ease-in-out;
-
-            &:hover {
-                transform: scale(1.05);
-            }
-        }
-
-        .user-actions {
-            display: flex;
-            flex-direction: row;
-            gap: 1rem;
-
-            .btn-small {
-                padding: 0.4rem 0.8rem;
-                border: none;
-                border-radius: $radius-sm;
-                background-color: $primary-color;
-                color: #fff;
-                cursor: pointer;
-                font-size: 0.8rem;
-                font-weight: 500;
-                @include transition(0.2s);
-
-                &:hover {
-                opacity: 0.8;
-                }
-
-                &.logout {
-                background-color: $danger-color;
-                }
-                &.admin {
-                background-color: $secondary-color;
-                }
-                &.back {
-                background-color: $color-success;
-                }
-                &.profile {
-                background-color: $primary-color;
-                }
-            }
-        }
-    }
+}
 }
