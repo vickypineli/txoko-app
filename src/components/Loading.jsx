@@ -1,34 +1,18 @@
 // src/components/Loading.jsx
+import React from "react";
+import "../styles/components/Loading.scss";
+
 export default function Loading({ text = "Cargando..." }) {
   return (
-    <div style={{
-      display: "flex",
-      gap: "8px",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "20px",
-      fontSize: "15px"
-    }}>
-      <div
-        style={{
-          width: "16px",
-          height: "16px",
-          border: "3px solid #ccc",
-          borderTopColor: "#6a4df4",
-          borderRadius: "50%",
-          animation: "spin 0.7s linear infinite",
-        }}
-      />
-      <span>{text}</span>
+    <div className="loading-container">
+      <div className="loading-dots">
+        <div className="loading-dot" style={{ animationDelay: "0s" }} />
+        <div className="loading-dot" style={{ animationDelay: "0.25s" }} />
+        <div className="loading-dot" style={{ animationDelay: "0.5s" }} />
+      </div>
 
-      <style>
-        {`
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to   { transform: rotate(360deg); }
-          }
-        `}
-      </style>
+      <span className="loading-text">{text}</span>
     </div>
   );
 }
+
