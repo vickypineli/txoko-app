@@ -26,8 +26,6 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-evenly;
-
-    // padding-top: 2rem;
     padding: 1rem 2rem;
     gap: 2rem;
 
@@ -41,41 +39,10 @@
     width: 100%;
     max-width: 700px;
     background: #fff;
-    border-radius: $radius-lg;
-    box-shadow: $shadow-md;
+    border-radius: $radius-sm;
     padding: 2ch 1rem 2rem 1rem;
     margin-bottom: 1rem;
     text-align: center;
-  }
-
-  .actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    justify-content: center;
-
-    @include respond(tablet) {
-      flex-direction: row;
-    }
-
-    button {
-      background-color: $primary-color;
-      color: #fff;
-      border: none;
-      border-radius: $radius;
-      padding: 0.8rem 1.4rem;
-      font-weight: 600;
-      cursor: pointer;
-      @include transition(0.3s);
-
-      &:hover {
-        opacity: 0.9;
-      }
-
-      &:nth-child(2) {
-        background-color: $secondary-color;
-      }
-    }
   }
 
   .no-bookings {
@@ -89,87 +56,9 @@
     width: 100%;
     min-height: 53vh;
     background: $background-light;
-    border-radius: $radius-lg;
-    box-shadow: $shadow-md;
+    border-radius: $radius-sm;
     padding: 1rem;
     margin-bottom: 2rem;
   } 
-  .bookings-list {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto 3rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    padding: 0 1rem;
-
-    .booking-row {
-      display: flex;
-      align-items: center;
-      background: #fff;
-      border-radius: $radius;
-      box-shadow: $shadow-sm;
-      padding: 0.6rem 0.8rem;
-      transition: background 0.2s ease-in-out;
-
-      // &:hover {
-      //   background: rgba($primary-color, 0.06);
-      // }
-
-      .booking-color {
-        width: 20px;
-        height: 12px;
-        border-radius: 3px;
-        margin-right: 0.8rem;
-        flex-shrink: 0;
-
-        &.morning {
-          background-color: #3498db; // azul
-        }
-        &.afternoon {
-          background-color: #f1c40f; // amarillo
-        }
-        &.full {
-          background-color: #e74c3c; // rojo
-        }
-      }
-
-      .booking-info {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.3rem;
-        font-size: 0.95rem;
-        color: $color-text;
-
-        .booking-date {
-          font-weight: 600;
-        }
-
-        .booking-type {
-          color: $primary-color;
-        }
-
-        .booking-notes {
-          color: $color-text-secondary;
-          font-style: italic;
-        }
-      }
-    }
-  }
-  // .loading {
-  //   text-align: center;
-  //   color: $color-text-secondary;
-  //   font-size: 3rem;
-  //   margin: 2rem 0;
-  // }
-
-  @include respond(tablet) {
-    .bookings-list {
-      max-width: 800px;
-      .booking-row {
-        padding: 0.8rem 1.2rem;
-      }
-    }
-  }
 
 }

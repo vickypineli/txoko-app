@@ -7,6 +7,8 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getUserBookings, deleteBooking } from "../services/bookingService";
 import Loading from "../components/Loading";
 import Header from "../components/Header";
+import BookingsList from "../components/BookingsList";
+import { Trash2 } from "lucide-react";
 
 import "../styles/pages/ProfilePage.scss";
 
@@ -173,9 +175,9 @@ const getInitials = () => {
   return (
     <div className="profile-page">
       <Header/>
-      <h2>Mi Perfil</h2>
+      <h3>Mi Perfil</h3>
 
-      <div className="profile-card">
+      <div className="profile-section">
         <div className="avatar" style={{ backgroundColor: getAvatarColor() }}>
           {getInitials()}
         </div>
@@ -220,7 +222,7 @@ const getInitials = () => {
                 Guardar
               </button>
               <button className="btn-cancel" onClick={() => setEditing(false)}>
-                Cancelar
+                <Trash2 color="#e10909" absoluteStrokeWidth />
               </button>
             </div>
           </div>
@@ -243,43 +245,19 @@ const getInitials = () => {
         )}
       </div>
       
-
       <h3>Mis Reservas</h3>
+      <div className="bookings-section">
       {bookings.length === 0 ? (
         <p>No has realizado ninguna reserva todavía.</p>
       ) : (
-        <table className="booking-table">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Turno</th>
-              <th>Notas</th>
-              <th>Accion</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {bookings.map((b) => (
-              <tr key={b.id}>
-                <td data-label="Fecha">{formatDate(b.date)}</td>
-                <td data-label="Turno">{b.type}</td>
-                <td>{b.notes || "—"}</td>
-                <td data-label="Acción">
-                  {b.date > todayStr ? (
-                    <button
-                        className="btn-delete"
-                        onClick={() => openDeleteModal(b)}
-                      >
-                      Eliminar
-                    </button>
-                  ) : (
-                    <span className="past">—</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          <div className="booking-list">
+            <BookingsList
+              bookings={bookings}
+              showActions={true}
+              onDelete={openDeleteModal}
+              todayStr={todayStr}
+            />
+          </div>
       )}
   
 
@@ -290,8 +268,17 @@ const getInitials = () => {
           <div className="modal">
             <h4>¿Eliminar esta reserva?</h4>
             <p>
-              {selectedBooking &&
-                `Reserva del ${formatDate(selectedBooking.date)} (${selectedBooking.type})`}
+              {selectedBooking && (
+                <>
+                  Reserva del {formatDate(selectedBooking.date)} (
+                  {selectedBooking.type === "morning"
+                    ? "Mañana"
+                    : selectedBooking.type === "afternoon"
+                    ? "Tarde"
+                    : "Día completo"}
+                  )
+                </>
+              )}
             </p>
             <div className="modal-buttons">
               <button className="btn-confirm" onClick={confirmDelete}>
@@ -304,6 +291,7 @@ const getInitials = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -1,0 +1,113 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.bookings-list {
+    width: 90%;
+    max-width: 500px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    
+
+    .booking-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border-radius: $radius;
+      box-shadow: $shadow-sm;
+      padding: 0.6rem 0.8rem;
+      white-space: nowrap;
+      transition: background 0.2s ease-in-out;
+
+      .booking-color {
+        width: 25px;
+        height: 12px;
+        border-radius: 3px;
+        margin-right: 0.5rem;
+        flex-shrink: 0;
+
+        &.morning {
+          background-color: #3498db; // azul
+        }
+        &.afternoon {
+          background-color: #f1c40f; // amarillo
+        }
+        &.full {
+          background-color: #e74c3c; // rojo
+        }
+      }
+
+      .booking-info {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        font-size: 0.95rem;
+        color: $color-text;
+
+        .booking-date {
+          font-weight: 600;
+        }
+
+        .booking-type {
+     
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          //justify-content: center;
+          font-size: 0.8rem;  
+          color: $primary-color;
+          font-weight: 600;
+        }
+
+        .booking-notes {
+          color: $color-text-secondary;
+          font-style: italic;
+        }
+      }
+
+    .booking-actions {
+      .btn-delete {
+        background: $danger-color;
+        color: #fff;
+        border: none;
+        padding: 0.3rem;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+
+        svg {
+          stroke: #fff;
+        }
+
+        &.disabled {
+          background: #ccc;
+          cursor: not-allowed;
+
+          svg {
+            stroke: #755c5c; // color apagado
+          }
+        }
+        &:hover {
+          background: #fff;
+          svg {
+            stroke:$danger-color;
+          }
+        }
+      }
+    }
+
+    }
+  }
+  @include respond(tablet) {
+    .bookings-list {
+      max-width: 800px;
+      .booking-row {
+        padding: 0.8rem 1.2rem;
+      }
+    }
+  }

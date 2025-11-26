@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import "../styles/components/Calendar.scss";
 import { auth } from "../firebaseConfig";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 function Calendar({ bookings = [], onDayClick, onMonthChange }) {
   const [month, setMonth] = useState(new Date());
@@ -111,9 +112,13 @@ function Calendar({ bookings = [], onDayClick, onMonthChange }) {
     <div className="calendar">
       {/* Cabecera del mes */}
       <div className="calendar-header">
-        <button onClick={prevMonth}>←</button>
+        <button onClick={prevMonth}>
+          <ArrowLeft  className="arrow"/>
+        </button>
         <h3>{month.toLocaleString("es-ES", { month: "long", year: "numeric" })}</h3>
-        <button onClick={nextMonth}>→</button>
+        <button onClick={nextMonth}>
+          <ArrowRight className="arrow"/>
+        </button>
       </div>
 
       {/* Aviso de restricciones

@@ -22,23 +22,17 @@ function AdminBookings() {
 
   const loadBookings = async () => {
     const data = await getAllBookings();
-    console.log("📥 BOOKINGS RECIBIDOS:", data);
     setBookings(data.sort((a, b) => new Date(a.date) - new Date(b.date)));
   };
 
   const handleEdit = (booking) => {
-    console.log("✏️ ENTRANDO A EDITAR RESERVA:", booking);
-    console.log("➡️ userId EN booking:", booking.userId);
-    console.log("➡️ userName EN booking:", booking.userName)
     setEditingId(booking.id);
     setEditedBooking(booking);
     setUsers([]); // Reset users state
     // Cargar todos los usuarios para el select
     getAllUsers().then((all) => {
-      console.log("📥 USERS RECIBIDOS:", all);
       const filtered = all.filter((u) => u.email !== "");
       setUsers(filtered);
-      console.log("📥 USERS FILTRADOS:", filtered);
     }); 
   };
     const validateBooking = (data) => {
@@ -59,7 +53,6 @@ function AdminBookings() {
 
     try {
       setErrorMsg("");
-
       await updateBooking(editingId, editedBooking);
       setEditingId(null);
       loadBookings();
@@ -86,7 +79,7 @@ function AdminBookings() {
       [e.target.name]: e.target.value,
     }));
   };
-    // 🔍 Filtrado por nombre y apellidos
+    //  Filtrado por nombre y apellidos
   const bookingsFiltered = bookings.filter((b) =>
     b.userName.toLowerCase().includes(search.toLowerCase())
   );
@@ -95,7 +88,7 @@ return (
     <div className="admin-bookings-wrapper">
       <h2>Reservas</h2>
 
-      {/* 🔎 BUSCADOR */}
+      {/* BUSCADOR */}
       <input
         type="text"
         placeholder="Buscar por nombre o apellidos..."
@@ -159,10 +152,10 @@ return (
 
                     setEditedBooking((prev) => ({
                       ...prev,
-                      userId: selectedId, // 🔥 string válido, no Number()
+                      userId: selectedId, // string válido, no Number()
                       userName: selectedUser
                         ? `${selectedUser.nombre} ${selectedUser.apellidos}`.trim()
-                        : prev.userName, // 🔥 nada de undefined
+                        : prev.userName, // nada de undefined
                     }));
                   }}
                 >

@@ -68,8 +68,7 @@
   cursor: pointer;
   font-weight: 600;
   background: $primary-color;
-  color: $color-surface;
-  transition: all .15s ease;
+  color:$light-color;
 }
 
 .modal button:disabled { opacity: 0.7; cursor: not-allowed; }
