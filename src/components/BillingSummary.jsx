@@ -2,12 +2,16 @@
 import { useEffect, useMemo, useState } from "react";
 import useBilling from "../hooks/useBilling";
 import { useAuth } from "../context/AuthContext"; // AJUSTA ruta si tu context está en otra carpeta
+import BillingChart from "./BillingChart";
 import "../styles/components/BillingSummary.scss";
 
 const displayUserName = (u) =>
   (u?.nombre || "") + (u?.apellidos ? " " + u.apellidos : "") || u?.email || u?.id || "Usuario";
 
+
+
 function BillingSummary({ mode = "user" }) {
+  const currentYear = new Date().getFullYear();
   const { user: authUser, isAdmin } = useAuth();
   const uid = authUser?.uid || null;
   const { users, loading, months, getMonthData, exportMonthPdf, lastMonthForUser } =
@@ -32,6 +36,14 @@ function BillingSummary({ mode = "user" }) {
     // mantener el defaultAdminMonth y permitir al admin elegir meses con reservas en el selector.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [months, lastMonthForUser]);
+
+    const getYearMonths = (year) => {
+    return Array.from({ length: 12 }, (_, i) => {
+        const month = String(i + 1).padStart(2, "0");
+        return `${year}-${month}`;
+    });
+    };
+
 
   // Datos del mes seleccionado con filtro de usuario
   const userFilter = mode === "admin" && selectedUser !== "all" ? selectedUser : null;
@@ -100,7 +112,28 @@ function BillingSummary({ mode = "user" }) {
         <p>
           <strong>Total:</strong> {Number(monthData.total || 0).toFixed(2)} €
         </p>
+        {/*  GRÁFICO POR MESES -CON TOTALES DE TODO EL AÑO */}
+        <div className="billing-chart-wrapper">
+        <BillingChart
+            data={getYearMonths(currentYear).map((m) => {
+            const { total } = getMonthData({
+                month: m,
+                userId:
+                mode === "admin" && selectedUser !== "all" ? selectedUser : null
+            });
 
+            const [year, monthNum] = m.split("-");
+            const date = new Date(year, Number(monthNum) - 1, 1);
+
+            const label = date.toLocaleString("es-ES", {
+                month: "short",
+                year: "2-digit",
+            });
+
+            return { month: m, label, total };
+            })}
+        />
+        </div>
         <div className="booking-list-compact">
           {monthData.bookings.length === 0 ? (
             <p>No hay reservas en este mes.</p>
