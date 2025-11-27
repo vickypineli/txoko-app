@@ -1,122 +1,139 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
-@use "../abstracts/functions" as *;
 
 .profile-page {
   padding: 1.5rem;
-  text-align: center;
-  // background-color: $background-light;
-  color: $color-text;
 
-  .profile-section {
-    background: $background-light;
-    border-radius: $radius-sm;
-    // box-shadow: $shadow-lg;
+
+  .profile-wrapper {
     padding: 1.5rem;
-    margin: 0 auto 2rem;
-    max-width: 100%;
-    position: relative;
+    text-align: center;
+    color: $color-text;
 
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      color: $background-light;
-      font-size: 1.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      box-shadow: $shadow-lg;
-    }
+    .profile-section {
+      background: $background-light;
+      border-radius: $radius-sm;
+      padding: 2rem 0 ;
+      margin: 1.5rem auto;
+      margin: 0 auto 2rem;
+      position: relative;
 
-    .profile-info,
-    .profile-form {
-      text-align: center;
+      .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        color: $background-light;
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        box-shadow: $shadow-lg;
+      }
 
-      p {
-        margin: 0.5rem 0;
-        color: $color-text-secondary;
+      .profile-info,
+      .profile-form {
+        text-align: center;
+
+        p {
+          margin: 0.5rem 0;
+          color: $color-text-secondary;
+          font-size: 1rem;
+        }
+
+        label {
+          display: block;
+          margin-top: 0.8rem;
+          font-weight: 500;
+        }
+
+        input {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid $color-text-secondary;
+          border-radius: $radius-sm;
+          font-size: 0.95rem;
+        }
+        strong {
+          color: $color-text;
+          padding:0  10px;
+        }
+
+        .buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 0.8rem;
+          margin-top: 1rem;
+
+          @include respond(tablet) {
+            flex-direction: row;
+            justify-content: center;
+          }
+        }
+      }
+
+      button {
+        @include button-base();
+        margin-top: 1rem;
         font-size: 0.95rem;
+
+        &.btn-edit {
+          background: $primary-color;
+          color: $background-light;
+        }
+
+        &.btn-save {
+          background: $color-success;
+          color: $background-light;
+        }
+
+        &.btn-cancel {
+          background: $danger-color;
+          color: $background-light;
+        }
       }
 
-      label {
-        display: block;
-        margin-top: 0.8rem;
-        font-weight: 500;
-      }
-
-      input {
-        width: 100%;
-        padding: 0.5rem;
-        border: 1px solid $color-text-secondary;
-        border-radius: $radius-sm;
-        font-size: 0.95rem;
-      }
-      strong {
-        color: $color-text;
-        padding:0  10px;
-      }
-
-      .buttons {
+      .profile-inline {
         display: flex;
         flex-direction: column;
         gap: 0.8rem;
         margin-top: 1rem;
 
+        div {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+        }
+
         @include respond(tablet) {
           flex-direction: row;
-          justify-content: center;
         }
       }
     }
-
-    button {
-      @include button-base();
-      margin-top: 1rem;
-      font-size: 0.95rem;
-
-      &.btn-edit {
-        background: $primary-color;
-        color: $background-light;
-      }
-
-      &.btn-save {
-        background: $color-success;
-        color: $background-light;
-      }
-
-      &.btn-cancel {
-        background: $danger-color;
-        color: $background-light;
-      }
+    .bookings-section {
+      align-items: center;
+      background-color: #fff;
+      border-radius: $radius-sm;
+      padding: 2rem 0 ;
+      margin: 0 auto 2rem;
+      position: relative;
     }
 
-    .profile-inline {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      margin-top: 1rem;
-
-      div {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-      }
-
-      @include respond(tablet) {
-        flex-direction: row;
-      }
-    }
   }
-  .bookings-section {
-    align-items: center;
-    background-color: #fff;
-    border-radius: $radius-sm;
-    padding: 2rem 0 ;
-    
-    
+
+    @include respond(tablet) {
+    .profile-wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+    }
+    .profile-section {
+      width: 45%;
+    }
+    .bookings-section {
+      width: 45%;
+    }
   }
 }

@@ -173,11 +173,12 @@ const getInitials = () => {
 
 
   return (
-    <div className="profile-page">
+    < div className="profile-page">
       <Header/>
-      <h3>Mi Perfil</h3>
-
+      <h2>Mi Perfil</h2>
+    <div className="profile-wrapper">  
       <div className="profile-section">
+        
         <div className="avatar" style={{ backgroundColor: getAvatarColor() }}>
           {getInitials()}
         </div>
@@ -245,8 +246,9 @@ const getInitials = () => {
         )}
       </div>
       
-      <h3>Mis Reservas</h3>
+      
       <div className="bookings-section">
+        <h3>Mis reservas</h3>
       {bookings.length === 0 ? (
         <p>No has realizado ninguna reserva todavía.</p>
       ) : (
@@ -293,6 +295,7 @@ const getInitials = () => {
       )}
       </div>
     </div>
+  </div>
   );
 }
 
