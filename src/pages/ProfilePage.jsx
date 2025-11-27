@@ -8,6 +8,7 @@ import { getUserBookings, deleteBooking } from "../services/bookingService";
 import Loading from "../components/Loading";
 import Header from "../components/Header";
 import BookingsList from "../components/BookingsList";
+import BillingSummary from "../components/BillingSummary";
 import { Trash2 } from "lucide-react";
 
 import "../styles/pages/ProfilePage.scss";
@@ -261,6 +262,7 @@ const getInitials = () => {
             />
           </div>
       )}
+
   
 
      {/*  Modal Confirmación */}
@@ -294,6 +296,10 @@ const getInitials = () => {
         </div>
       )}
       </div>
+
+    </div>
+    <div className="billing-section">
+      <BillingSummary mode="user" />
     </div>
   </div>
   );

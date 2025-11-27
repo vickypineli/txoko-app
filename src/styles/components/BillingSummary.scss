@@ -1,0 +1,70 @@
+/* src/styles/components/BillingSummary.scss */
+.billing-summary {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.billing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.billing-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.billing-body {
+  margin-top: 12px;
+}
+.booking-list-compact table,
+.full-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.booking-list-compact th,
+.booking-list-compact td,
+.full-table th,
+.full-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+.compact-table th { font-size: 0.9rem; }
+.modal-overlay.billing-modal {
+  position: fixed;
+  left: 0; right: 0; top: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+}
+.modal {
+  background: #fff;
+  padding: 16px;
+  border-radius: 6px;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 85vh;
+  overflow: auto;
+}
+.modal-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background: #f7f7f7;
+  cursor: pointer;
+}
+.btn-cancel {
+  background: #fff;
+  border-color: #ccc;
+}
