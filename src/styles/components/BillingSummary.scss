@@ -1,29 +1,56 @@
 /* src/styles/components/BillingSummary.scss */
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
 .billing-summary {
-  background: #fff;
+  width: 90%;
+  background: $background-light;
   border-radius: 8px;
   padding: 16px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin: 1rem auto;
+  //margin-bottom: 24px;
+  display: flex;
+  flex-direction: column; /* MOBILE FIRST */
+  gap: 16px;
 }
+
+/* HEADER */
 .billing-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column; /* MOBILE */
+  gap: 12px;
 }
+
+/* Controles */
 .billing-controls {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
+
+/* BODY */
 .billing-body {
-  margin-top: 12px;
+  display: flex;
+  flex-direction: column; /* MOBILE */
+  gap: 16px;
 }
+
+/* Chart */
+.billing-chart-wrapper {
+  margin: 20px 0;
+  padding: 1rem;
+  background: $color-background;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+/* Tablas */
 .booking-list-compact table,
 .full-table {
-  width: 100%;
+  width: 90%;
   border-collapse: collapse;
 }
+
 .booking-list-compact th,
 .booking-list-compact td,
 .full-table th,
@@ -32,16 +59,20 @@
   border-bottom: 1px solid #eee;
   text-align: left;
 }
+
 .compact-table th { font-size: 0.9rem; }
+
+/* Modal */
 .modal-overlay.billing-modal {
   position: fixed;
-  left: 0; right: 0; top: 0; bottom: 0;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(0,0,0,0.45);
   z-index: 9999;
 }
+
 .modal {
   background: #fff;
   padding: 16px;
@@ -51,12 +82,16 @@
   max-height: 85vh;
   overflow: auto;
 }
+
 .modal-controls {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
   margin-bottom: 12px;
 }
+
+/* Buttons */
 .btn {
   padding: 6px 10px;
   border-radius: 6px;
@@ -64,18 +99,32 @@
   background: #f7f7f7;
   cursor: pointer;
 }
+
 .btn-cancel {
   background: #fff;
   border-color: #ccc;
 }
-.billing-chart-wrapper {
-  margin: 20px 0;
-  padding: 12px;
-  background: #fafafa;
-  border-radius: 8px;
-  border: 1px solid #eee;
-}
-.recharts-layer  {
-  cursor: pointer;
-  background-color: red;
+
+/* ====== BREAKPOINTS ====== */
+@media (min-width: 768px) {
+  
+  .billing-header {
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+
+  .billing-body {
+    flex-direction: row; /* EN TABLET/PC SE PONE EN FILA */
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .billing-chart-wrapper {
+    flex: 1;
+  }
+
+  .booking-list-compact {
+    flex: 1;
+  }
 }

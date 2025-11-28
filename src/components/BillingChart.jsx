@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Legend
 } from "recharts";
+import "../styles/components/BillingChart.scss";
 
 /**
  * data = [
@@ -22,9 +23,9 @@ export default function BillingChart({ data }) {
   }
 
   return (
-    <div style={{ width: "100%", height: 280 }}>
+    <div className="billing-chart-container" style={{ width: "100%", height: 280 }}>
       <ResponsiveContainer>
-        <BarChart data={data} margin={{ color: "red", top: 10, right: 20, left: 0, bottom: 0 }}>
+        <BarChart data={data} margin={{  top: 10, right: 20, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="label" />
           <YAxis />
@@ -34,8 +35,8 @@ export default function BillingChart({ data }) {
           <Bar
             dataKey="total"
             name="Total €"
-            fill="#3b82f6"
-            stroke="#1e40af"   // borde azul más oscuro
+            fill="#D2691E"
+            stroke="#D2691E"   // borde azul más oscuro
             strokeWidth={1}
             radius={[6, 6, 0, 0]} // esquinas redondeadas
           />

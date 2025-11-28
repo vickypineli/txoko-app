@@ -121,11 +121,6 @@ function Calendar({ bookings = [], onDayClick, onMonthChange }) {
         </button>
       </div>
 
-      {/* Aviso de restricciones
-      <p className="calendar-info">
-        Solo se pueden reservar fechas dentro del año <strong>{currentYear}</strong> y posteriores a hoy.
-      </p> */}
-
       {/* Días de la semana */}
       <div className="calendar-weekdays">
         {["L", "M", "X", "J", "V", "S", "D"].map((d) => (

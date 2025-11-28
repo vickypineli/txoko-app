@@ -37,6 +37,7 @@ function BillingSummary({ mode = "user" }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [months, lastMonthForUser]);
 
+
     const getYearMonths = (year) => {
     return Array.from({ length: 12 }, (_, i) => {
         const month = String(i + 1).padStart(2, "0");
@@ -103,7 +104,9 @@ function BillingSummary({ mode = "user" }) {
       </div>
 
       <div className="billing-body">
-        <h4>
+        {/*  GRÁFICO POR MESES -CON TOTALES DE TODO EL AÑO */}
+        <div className="billing-chart-wrapper">
+                   <h4>
           {selectedMonth
             ? new Date(selectedMonth + "-01").toLocaleString("es-ES", { month: "long", year: "numeric" })
             : "—"}
@@ -112,8 +115,6 @@ function BillingSummary({ mode = "user" }) {
         <p>
           <strong>Total:</strong> {Number(monthData.total || 0).toFixed(2)} €
         </p>
-        {/*  GRÁFICO POR MESES -CON TOTALES DE TODO EL AÑO */}
-        <div className="billing-chart-wrapper">
         <BillingChart
             data={getYearMonths(currentYear).map((m) => {
             const { total } = getMonthData({
@@ -153,7 +154,14 @@ function BillingSummary({ mode = "user" }) {
                   <tr key={b.id}>
                     <td>{b._dateStr}</td>
                     {mode === "admin" && <td>{b.userName || b.userId}</td>}
-                    <td>{b.type}</td>
+                    <td>
+                        {b.type === "morning"
+                        ? "Mañana"
+                        : b.type === "afternoon"
+                        ? "Tarde"
+                        : "Día completo"}  
+                    </td>
+
                     <td>{Number(b.price || 0).toFixed(2)} €</td>
                     <td>{b.notes || ""}</td>
                   </tr>
